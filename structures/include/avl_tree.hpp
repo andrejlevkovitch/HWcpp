@@ -15,7 +15,7 @@
 template<typename T, typename Compare = std::less<T>>
 class AVL_tree {
     public:
-        static size_t max_size();
+        static const size_t &max_size();
     public:
         class Node {
             private:
@@ -41,10 +41,10 @@ class AVL_tree {
         AVL_tree ();
         ~AVL_tree();
         size_t size() const;
-        auto insert(T &value) -> const decltype(root_);//generated length error
-        auto insert(T &&value) -> const decltype(root_);//generated length error
-        auto find(T &value) const -> const decltype(root_);//nullptr as def
-        auto find(T &&value) const -> const decltype(root_);//nullptr as def
+        bool insert(T &value);//generated length error
+        bool insert(T &&value);//generated length error
+        bool find(T &value) const;
+        bool find(T &&value) const;
         bool erase(T &value);
         bool erase(T &&value);
         template<typename C>
@@ -63,7 +63,7 @@ class AVL_tree {
 };
 
 template<typename T, typename Compare>
-size_t AVL_tree<T, Compare>::max_size()
+const size_t &AVL_tree<T, Compare>::max_size()
 {
     static const size_t retvalue {1000000};
     return retvalue;
@@ -99,7 +99,7 @@ AVL_tree<T, Compare>::~AVL_tree()
 }
 
 template<typename T, typename Compare>
-auto AVL_tree<T, Compare>::insert(T &value) -> const decltype(root_)
+bool AVL_tree<T, Compare>::insert(T &value)
 {
     if (size_ >= max_size()) {
         throw std::length_error("more than max size");
@@ -115,7 +115,7 @@ auto AVL_tree<T, Compare>::insert(T &value) -> const decltype(root_)
         }
         else {
             if (in_node->info_ == value) {
-                return nullptr;
+                return false;
             }
             else {
                 stack.push(Way {compare_(in_node->info_, value), q_node});
@@ -150,11 +150,11 @@ auto AVL_tree<T, Compare>::insert(T &value) -> const decltype(root_)
     }
 
     size_++;
-    return in_node;
+    return true;
 }
 
 template<typename T, typename Compare>
-auto AVL_tree<T, Compare>::insert(T &&value) -> const decltype(root_)
+bool AVL_tree<T, Compare>::insert(T &&value)
 {
     if (size_ >= max_size()) {
         throw std::length_error("more than max size");
@@ -170,7 +170,7 @@ auto AVL_tree<T, Compare>::insert(T &&value) -> const decltype(root_)
         }
         else {
             if (in_node->info_ == value) {
-                return nullptr;
+                return false;
             }
             else {
                 stack.push(Way {compare_(in_node->info_, value), q_node});
@@ -205,15 +205,15 @@ auto AVL_tree<T, Compare>::insert(T &&value) -> const decltype(root_)
     }
 
     size_++;
-    return in_node;
+    return true;
 }
 
 template<typename T, typename Compare>
-auto AVL_tree<T, Compare>::find(T &value) const -> const decltype(root_)
+bool AVL_tree<T, Compare>::find(T &value) const
 {
     auto s_node {root_};
     if (!s_node) {
-        return nullptr;
+        return false;
     }
     while (value != s_node->info_) {
         s_node = s_node->child_[compare_(s_node->info_, value)];
@@ -221,15 +221,15 @@ auto AVL_tree<T, Compare>::find(T &value) const -> const decltype(root_)
             break;
         }
     }
-    return s_node;
+    return true;
 }
 
 template<typename T, typename Compare>
-auto AVL_tree<T, Compare>::find(T &&value) const -> const decltype(root_)
+bool AVL_tree<T, Compare>::find(T &&value) const
 {
     auto s_node {root_};
     if (!s_node) {
-        return nullptr;
+        return false;
     }
     while (value != s_node->info_) {
         s_node = s_node->child_[compare_(s_node->info_, value)];
@@ -237,7 +237,7 @@ auto AVL_tree<T, Compare>::find(T &&value) const -> const decltype(root_)
             break;
         }
     }
-    return s_node;
+    return true;
 }
 
 template<typename T, typename Compare>

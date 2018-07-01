@@ -9,7 +9,7 @@
 template<typename W>
 class Stack {
     public:
-        static size_t max_size();
+        static const size_t &max_size();
     private:
         class Node {
             public:
@@ -38,6 +38,13 @@ class Stack {
 };
 
 template<typename W>
+const size_t &Stack<W>::max_size()
+{
+    static const size_t retvalue {1000};
+    return retvalue;
+}
+
+template<typename W>
 Stack<W>::Node::Node (W &value) : previous_ {nullptr}, info_ {value}
 {
 }
@@ -45,13 +52,6 @@ Stack<W>::Node::Node (W &value) : previous_ {nullptr}, info_ {value}
 template<typename W>
 Stack<W>::Node::~Node()
 {
-}
-
-template<typename W>
-size_t Stack<W>::max_size()
-{
-    static const size_t retvalue {1000};
-    return retvalue;
 }
 
 template<typename W>
