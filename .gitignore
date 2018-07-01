@@ -3,3 +3,4 @@
 *.so
 *.o
 build/
+output.txt
