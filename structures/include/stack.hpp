@@ -29,7 +29,7 @@ class Stack {
         W &push(W &value);//generated length error
         W &push(W &&value);//generaded length error
         bool pop();
-        W &head();//generated domain error
+        W &head() const;//generated domain error
 
         Stack (Stack &) = delete;
         Stack (Stack &&) = delete;
@@ -114,7 +114,7 @@ bool Stack<W>::pop()
 }
 
 template<typename W>
-W &Stack<W>::head()
+W &Stack<W>::head() const
 {
     if (!head_) {
         throw std::domain_error ("can't dereferention nullptr");

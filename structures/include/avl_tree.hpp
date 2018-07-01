@@ -16,7 +16,7 @@ template<typename T, typename Compare = std::less<T>>
 class AVL_tree {
     public:
         static const size_t &max_size();
-    public:
+    private:
         class Node {
             private:
                 static const short N_NODE {2};
