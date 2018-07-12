@@ -2,6 +2,7 @@
 
 #include<iostream>
 #include<algorithm>
+#include<string>
 
 #include"stack.hpp"
 
@@ -40,6 +41,14 @@ int main(int argc, char *argv[])
     std::cout << std::endl;
     std::cout << "iterators out\n";
 
+    Stack<std::string> gama;
+
+    std::string str {"alfa"};
+    gama.push(str);
+
+    auto itr = gama.begin();
+
+    std::cout << itr->size() << std::endl << *itr << std::endl;
 
     return 0;
 }

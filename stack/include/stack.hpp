@@ -20,9 +20,10 @@ class Stack {
             private:
                 Node * point_;
             public:
-                Iterator () : point_ {nullptr} {};
                 Iterator (Node * const alfa) : point_ {alfa} {};
-                operator T * () const {return &point_->info_;};
+                Iterator () : point_ {nullptr} {};
+                T & operator*() const {return point_->info_;};
+                T * operator->() const {return &point_->info_;};
                 Iterator & operator++ () {point_ = &(*point_->prev_); return *this;};
                 Iterator & operator=(Node * const a) {this->point_ = a;return *this;};
                 bool operator!=(const Iterator & rhs) const {return (point_ != rhs.point_) ? true : false;};
@@ -95,7 +96,7 @@ Stack<T>::~Stack()
 template<typename T>
 void Stack<T>::push(const T & value)
 {
-    std::unique_ptr<Node> temp {new Node {value}};
+    std::unique_ptr<Node> temp {std::make_unique<Node>(value)};
     temp->prev_ = std::move(head_);
     head_ = std::move(temp);
     ++size_;
