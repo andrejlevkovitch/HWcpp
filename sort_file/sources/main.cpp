@@ -14,8 +14,10 @@ int main(int argc, char *argv[])
     else {
         file = WAY_TO_FILE + NAME_FILE;
     }
+
     try {
         std::cout << "Started sortring of: " << file << " file\n";
+        //int digit = count_sort(ios, file);
         int digit = buble_sort(ios, file);
         std::cout << "Finished sorting of: " << file << " file\n";
         std::cout << "In file was " << digit << " numbers\n";

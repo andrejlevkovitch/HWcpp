@@ -11,3 +11,4 @@ const std::string WAY_TO_FILE {"../data/"};
 const std::string NAME_FILE {"data.txt"};
 
 short buble_sort(std::fstream &, std::string &file);//generat exception
+short count_sort(std::fstream &, std::string &file);//generat exception
