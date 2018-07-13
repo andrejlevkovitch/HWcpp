@@ -14,7 +14,7 @@ int main(int argc, char *argv[])
             bool operator()(int a, int b) const {return a > b;};
         };
 
-        AVL_tree<int, Comp> alfa;
+        AVL_tree<int> alfa;
 
         int size {};
         int temp {};

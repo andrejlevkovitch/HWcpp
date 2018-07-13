@@ -13,10 +13,14 @@ const size_t Stack<W>::max_size()
 
 
 template<typename W>
-Stack<W>::Node::Node (const W &value) : previous_ {nullptr}, info_ {value}
+Stack<W>::Node::Node (const W & value) : previous_ {nullptr}, info_ {value}
 {
 }
 
+template<typename W>
+Stack<W>::Node::Node (const W && value) : previous_ {nullptr}, info_ {value}
+{
+}
 
 template<typename W>
 Stack<W>::Stack () :  head_ {nullptr}, size_ {0}
@@ -61,7 +65,7 @@ Stack<W> & Stack<W>::operator=(const Stack & in)
 
 
 template<typename W>
-size_t Stack<W>::size() const
+const size_t Stack<W>::size() const
 {
     return size_;
 }

@@ -33,7 +33,7 @@ AVL_tree<T, Compare>::begin()
 
 
 template<typename T, typename Compare>
-size_t AVL_tree<T, Compare>::size() const
+const size_t AVL_tree<T, Compare>::size() const
 {
     return size_;
 }
@@ -52,7 +52,7 @@ AVL_tree<T, Compare>::AVL_tree () : root_ {nullptr}, size_ {0}
 }
 
 template<typename T, typename Compare>
-bool AVL_tree<T, Compare>::insert(T &value)
+bool AVL_tree<T, Compare>::insert(const T &value)
 {
     if (size_ >= max_size()) {
         throw std::length_error("more than max size");
@@ -107,7 +107,7 @@ bool AVL_tree<T, Compare>::insert(T &value)
 }
 
 template<typename T, typename Compare>
-bool AVL_tree<T, Compare>::insert(T &&value)
+bool AVL_tree<T, Compare>::insert(const T &&value)
 {
     if (size_ >= max_size()) {
         throw std::length_error("more than max size");
@@ -162,7 +162,7 @@ bool AVL_tree<T, Compare>::insert(T &&value)
 }
 
 template<typename T, typename Compare>
-bool AVL_tree<T, Compare>::find(T &value) const
+bool AVL_tree<T, Compare>::find(const T &value) const
 {
     auto s_node {root_};
     if (!s_node) {
@@ -178,7 +178,7 @@ bool AVL_tree<T, Compare>::find(T &value) const
 }
 
 template<typename T, typename Compare>
-bool AVL_tree<T, Compare>::find(T &&value) const
+bool AVL_tree<T, Compare>::find(const T && value) const
 {
     auto s_node {root_};
     if (!s_node) {
@@ -194,7 +194,7 @@ bool AVL_tree<T, Compare>::find(T &&value) const
 }
 
 template<typename T, typename Compare>
-bool AVL_tree<T, Compare>::erase(T &value)
+bool AVL_tree<T, Compare>::erase(const T &value)
 {
     auto erase_node {root_};
     auto q_node {&root_};
@@ -272,7 +272,7 @@ bool AVL_tree<T, Compare>::erase(T &value)
 }
 
 template<typename T, typename Compare>
-bool AVL_tree<T, Compare>::erase(T &&value)
+bool AVL_tree<T, Compare>::erase(const T &&value)
 {
     auto erase_node {root_};
     auto q_node {&root_};

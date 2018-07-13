@@ -65,14 +65,14 @@ class AVL_tree {
         const Compare compare_;
     public:
         AVL_tree ();
-        size_t size() const;
+        const size_t size() const;
         bool empty() const;
-        bool insert(T &value);//generated length error
-        bool insert(T &&value);//generated length error
-        bool find(T &value) const;
-        bool find(T &&value) const;
-        bool erase(T &value);
-        bool erase(T &&value);
+        bool insert(const T & value);//generated length error
+        bool insert(const T && value);//generated length error
+        bool find(const T & value) const;
+        bool find(const T && value) const;
+        bool erase(const T & value);
+        bool erase(const T && value);
         Compare key_comp() const;
 
         const IteratorConst end();

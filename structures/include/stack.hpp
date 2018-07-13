@@ -17,6 +17,7 @@ class Stack {
                 W info_;
             public:
                 Node (const W & value);
+                Node (const W && value);
         };
     private:
         std::shared_ptr<Node> head_;
@@ -25,7 +26,7 @@ class Stack {
         Stack ();
         Stack (const Stack &);
         Stack & operator=(const Stack &);
-        size_t size() const;
+        const size_t size() const;
         bool empty() const;
         W & push(const W & value);//generated length error
         W & push(const W && value);//generaded length error
