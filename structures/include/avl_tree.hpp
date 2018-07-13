@@ -40,13 +40,13 @@ class AVL_tree {
         class IteratorConst {
             private:
                 struct StepI {
-                    std::shared_ptr<Node> node;
+                    std::shared_ptr<const Node> node;
                     bool direction;
-                    StepI (bool d, std::shared_ptr<Node> n)
+                    StepI (bool d, std::shared_ptr<const Node> n)
                         : node {n}, direction {d} {}
                 };
             private:
-                std::shared_ptr<Node> pointer_;
+                std::shared_ptr<const Node> pointer_;
                 Stack<StepI> way_;
             public:
                 IteratorConst ();
