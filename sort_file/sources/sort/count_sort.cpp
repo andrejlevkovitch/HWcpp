@@ -4,6 +4,7 @@
 #include<vector>
 
 const int MIN_VALUE {1000};
+const int COUNT_NUMBERS {9000};
 
 short count_sort(std::fstream &ios, std::string &file) {
     if (ios.is_open()) {
@@ -12,7 +13,7 @@ short count_sort(std::fstream &ios, std::string &file) {
     ios.open(file);
     if (ios.is_open()) {
         unsigned short size {};
-        std::vector<short> count_arr(9000, 0);
+        std::vector<short> count_arr(COUNT_NUMBERS, 0);
         short value {};
         while (ios >> value) {
             count_arr[value - MIN_VALUE]++;
