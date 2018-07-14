@@ -5,6 +5,7 @@
 #include<cstddef>
 #include<memory>
 #include<stdexcept>
+#include<iterator>
 
 template<typename W>
 class Stack {
@@ -20,6 +21,20 @@ class Stack {
                 explicit Node (const W && value);
         };
     private:
+        class Iterator : public std::iterator<std::output_iterator_tag, W> {
+            friend Stack;
+            private:
+                std::shared_ptr<Node> pointer_;
+            public:
+                Iterator ();
+                explicit Iterator (const std::shared_ptr<Node> &);
+                W & operator*() const;
+                W * operator->() const;
+                Iterator & operator++();
+                bool operator==(const Iterator &) const;
+                bool operator!=(const Iterator &) const;
+        };
+    private:
         std::shared_ptr<Node> head_;
         size_t size_;
     public:
@@ -33,8 +48,13 @@ class Stack {
         bool pop();
         W & head() const;//generated domain error
 
+        Iterator begin() const;
+        Iterator end() const;
+
         Stack (const Stack &&) = delete;
         Stack & operator=(const Stack &&) = delete;
 };
 
-#include"stack.cpp"
+#include"stack_.hpp"
+#include"stack_iterator.hpp"
+#include"stack_node.hpp"

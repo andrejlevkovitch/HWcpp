@@ -1,8 +1,8 @@
-//iterator.cpp
+//avl_iterator.hpp
 
 #pragma once
 
-#include"avl_tree.hpp"
+#include"avl.hpp"
 
 template<typename T, typename Compare>
 AVL_tree<T, Compare>::IteratorBi::IteratorBi () : pointer_ {nullptr}
@@ -11,7 +11,7 @@ AVL_tree<T, Compare>::IteratorBi::IteratorBi () : pointer_ {nullptr}
 
 template<typename T, typename Compare>
 AVL_tree<T, Compare>::IteratorBi::IteratorBi (
-        std::shared_ptr<Node> & node) : pointer_ {node}
+        const std::shared_ptr<Node> & node) : pointer_ {node}
 {
 }
 
@@ -129,7 +129,7 @@ AVL_tree<T, Compare>::IteratorBiRev::IteratorBiRev () : IteratorBi {}
 
 template<typename T, typename Compare>
 AVL_tree<T, Compare>::IteratorBiRev::IteratorBiRev (
-        std::shared_ptr<Node> & node) : IteratorBi {node}
+        const std::shared_ptr<Node> & node) : IteratorBi {node}
 {
 }
 

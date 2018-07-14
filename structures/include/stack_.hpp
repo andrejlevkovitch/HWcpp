@@ -1,4 +1,4 @@
-//stack.cpp
+//stack_.hpp
 
 #pragma once
 
@@ -13,33 +13,19 @@ const size_t Stack<W>::max_size()
 
 
 template<typename W>
-Stack<W>::Node::Node (const W & value) : previous_ {nullptr}, info_ {value}
-{
-}
-
-template<typename W>
-Stack<W>::Node::Node (const W && value) : previous_ {nullptr}, info_ {value}
-{
-}
-
-template<typename W>
 Stack<W>::Stack () :  head_ {nullptr}, size_ {0}
 {
 }
 
 template<typename W>
-Stack<W>::Stack (const Stack & in) : size_ {in.size_}
+Stack<W>::Stack (const Stack & in) : size_ {0}
 {
     if (!in.empty()) {
-        Stack<W> temp;
-        for (auto point {in.head_};
-                point;
-                point = point->previous_) {
-            temp.push(point->info_);
+        for (int i {}; i < in.size(); ++i) {
+            push(in.head());
         }
-        while (!temp.empty()) {
-            push(temp.head());
-            temp.pop();
+        for (auto i {begin()}, j {in.begin()}; i != end(); ++i, ++j) {
+            *i = *j;
         }
     }
 }
@@ -126,4 +112,19 @@ W &Stack<W>::head() const
         throw std::domain_error ("can't dereferention nullptr");
     }
     return head_->info_;
+}
+
+template<typename W>
+typename Stack<W>::Iterator Stack<W>::begin() const
+{
+    Iterator begin_node {head_};
+    return begin_node;
+}
+
+template<typename W>
+typename Stack<W>::Iterator Stack<W>::end() const
+{
+    Iterator void_end_node;
+    void_end_node.pointer_ = nullptr;
+    return void_end_node;
 }

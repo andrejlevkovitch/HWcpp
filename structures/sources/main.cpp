@@ -4,7 +4,7 @@
 #include<fstream>
 #include<algorithm>
 
-#include"avl_tree.hpp"
+#include"avl.hpp"
 
 int main(int argc, char *argv[])
 {

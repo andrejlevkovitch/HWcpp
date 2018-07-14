@@ -1,8 +1,8 @@
-//node_avl.cpp
+//avl_node.hpp
 
 #pragma once
 
-#include"avl_tree.hpp"
+#include"avl.hpp"
 
 template<typename T, typename Compare>
 AVL_tree<T, Compare>::Node::Node () :  key_ {}

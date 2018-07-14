@@ -1,8 +1,8 @@
-//avl_tree.cpp
+//avl_.hpp
 
 #pragma once
 
-#include"avl_tree.hpp"
+#include"avl.hpp"
 
 template<typename T, typename Compare>
 const size_t AVL_tree<T, Compare>::max_size()

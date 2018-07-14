@@ -1,4 +1,4 @@
-//avl_tree.hpp
+//avl.hpp
 
 #pragma once
 
@@ -45,7 +45,7 @@ class AVL_tree {
                 struct StepI {
                     std::shared_ptr<const Node> node;
                     bool direction;
-                    StepI (bool d, std::shared_ptr<const Node> n)
+                    StepI (bool d, const std::shared_ptr<const Node> n)
                         : node {n}, direction {d} {}
                 };
             private:
@@ -53,7 +53,7 @@ class AVL_tree {
                 Stack<StepI> way_;
             public:
                 IteratorBi ();
-                explicit IteratorBi (std::shared_ptr<Node> &);
+                explicit IteratorBi (const std::shared_ptr<Node> &);
                 virtual IteratorBi & operator++();
                 virtual IteratorBi & operator--();
                 const T & operator*() const;
@@ -64,10 +64,11 @@ class AVL_tree {
                 IteratorBi & first();
                 IteratorBi & last();
         };
+    public:
         class IteratorBiRev : public IteratorBi {
             public:
                 IteratorBiRev ();
-                explicit IteratorBiRev (std::shared_ptr<Node> &);
+                explicit IteratorBiRev (const std::shared_ptr<Node> &);
                 virtual IteratorBiRev & operator++();
                 virtual IteratorBiRev & operator--();
         };
@@ -102,6 +103,6 @@ class AVL_tree {
         void turn(std::shared_ptr<Node> * node);
 };
 
-#include"avl_tree.cpp"
-#include"node_avl.cpp"
-#include"iterator.cpp"
+#include"avl_.hpp"
+#include"avl_node.hpp"
+#include"avl_iterator.hpp"
