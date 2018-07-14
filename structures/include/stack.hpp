@@ -16,8 +16,8 @@ class Stack {
                 std::shared_ptr<Node> previous_;
                 W info_;
             public:
-                Node (const W & value);
-                Node (const W && value);
+                explicit Node (const W & value);
+                explicit Node (const W && value);
         };
     private:
         std::shared_ptr<Node> head_;

@@ -4,11 +4,9 @@
 
 #include<cstddef>
 #include<cstdbool>
-#include<functional>
 #include<memory>
-#include<fstream>
-#include<cmath>
 #include<stdexcept>
+#include<iterator>
 
 #include"stack.hpp"
 
@@ -27,9 +25,10 @@ class AVL_tree {
                 const T key_;
                 signed char balance_;
             public:
-                Node (const T & value);
-                Node (const T && value);
+                explicit Node (const T & value);
+                explicit Node (const T && value);
         };
+    private:
         struct Step {
             std::shared_ptr<Node> * node;
             bool direction;
@@ -37,7 +36,8 @@ class AVL_tree {
                 : node {n}, direction {d} {}
         };
     public:
-        class IteratorConst {
+        class IteratorConst : public std::iterator<
+                              std::bidirectional_iterator_tag, T> {
             private:
                 struct StepI {
                     std::shared_ptr<const Node> node;
@@ -50,7 +50,7 @@ class AVL_tree {
                 Stack<StepI> way_;
             public:
                 IteratorConst ();
-                IteratorConst (std::shared_ptr<Node> &);
+                explicit IteratorConst (std::shared_ptr<Node> &);
                 IteratorConst & operator++();
                 IteratorConst & operator--();
                 const T & operator*() const;

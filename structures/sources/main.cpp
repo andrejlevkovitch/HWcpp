@@ -2,6 +2,8 @@
 
 #include<iostream>
 #include<fstream>
+#include<algorithm>
+
 #include"avl_tree.hpp"
 
 int main(int argc, char *argv[])
@@ -14,7 +16,7 @@ int main(int argc, char *argv[])
             bool operator()(int a, int b) const {return a > b;};
         };
 
-        AVL_tree<int> alfa;
+        AVL_tree<int, Comp> alfa;
 
         int size {};
         int temp {};
@@ -31,6 +33,15 @@ int main(int argc, char *argv[])
         std::cout << "read from file end\n";
 
         std::cout << std::endl;
+
+
+        auto finded = std::find(alfa.begin(), alfa.end(), 29970);
+        if (finded != alfa.end()) {
+            std::cout << *finded << std::endl;
+        }
+        else {
+            std::cout << "no find" << std::endl;
+        }
 
 
         std::cout << "write in file start\n";
