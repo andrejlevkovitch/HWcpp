@@ -74,6 +74,8 @@ class AVL_tree {
     private:
         std::shared_ptr<Node> root_;
         size_t size_;
+        std::shared_ptr<Node> void_end_node_;
+        std::shared_ptr<Node> void_begin_node_;
         const Compare compare_;
     public:
         AVL_tree ();

@@ -16,9 +16,8 @@ template<typename T, typename Compare>
 const typename AVL_tree<T, Compare>::IteratorBi
 AVL_tree<T, Compare>::end()
 {
-    static std::shared_ptr<Node> end_node = std::make_shared<Node>();
-    end_node->child_[0] =end_node->child_[1] = root_;
-    IteratorBi endIter {end_node};
+    void_end_node_->child_[0] = void_end_node_->child_[1] = root_;
+    IteratorBi endIter {void_end_node_};
     return endIter;
 }
 
@@ -35,9 +34,8 @@ template<typename T, typename Compare>
 const typename AVL_tree<T, Compare>::IteratorBiRev
 AVL_tree<T, Compare>::rend()
 {
-    static std::shared_ptr<Node> end_node = std::make_shared<Node>();
-    end_node->child_[0] =end_node->child_[1] = root_;
-    IteratorBiRev endIter {end_node};
+    void_begin_node_->child_[0] = void_begin_node_->child_[1] = root_;
+    IteratorBiRev endIter {void_begin_node_};
     return endIter;
 }
 
@@ -66,6 +64,8 @@ bool AVL_tree<T, Compare>::empty() const
 template<typename T, typename Compare>
 AVL_tree<T, Compare>::AVL_tree () : root_ {nullptr}, size_ {0}
 {
+    void_end_node_ = std::make_shared<Node>();
+    void_begin_node_ = std::make_shared<Node>();
 }
 
 template<typename T, typename Compare>
