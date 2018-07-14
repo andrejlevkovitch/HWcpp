@@ -48,6 +48,9 @@ int main(int argc, char *argv[])
         fout.open(argv[2]);
         if (fout.is_open()) {
             fout << alfa.size() << '\n';
+//          std::for_each(
+//                  alfa.rbegin(), alfa.rend(),
+//                  [&](auto & element){fout << element << ' ';});
             for (auto & temp : alfa) {
                 fout << temp << ' ';
             }
@@ -80,5 +83,4 @@ int main(int argc, char *argv[])
     else {
         return 1;
     }
-
 }

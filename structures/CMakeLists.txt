@@ -17,7 +17,8 @@ if(cros_compile)
     set(CMAKE_CXX_FLAGS "-static-libstdc++ -static-libgcc")
 endif(cros_compile)
 
-add_definitions(-Wall -std=c++14)
+set(CMAKE_CXX_STANDARD 14)
+add_definitions(-Wall)
 
 set(MAIN_SRC sources/main.cpp)
 

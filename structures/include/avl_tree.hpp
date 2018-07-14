@@ -18,13 +18,15 @@ class AVL_tree {
         static const bool RIGHT {1};
     private:
         class Node {
+            friend AVL_tree;
             private:
                 static const short N_NODE {2};
-            public:
+            private:
                 std::shared_ptr<Node> child_[N_NODE];
                 const T key_;
                 signed char balance_;
             public:
+                Node ();
                 explicit Node (const T & value);
                 explicit Node (const T && value);
         };
@@ -36,8 +38,9 @@ class AVL_tree {
                 : node {n}, direction {d} {}
         };
     public:
-        class IteratorConst : public std::iterator<
+        class IteratorBi : public std::iterator<
                               std::bidirectional_iterator_tag, T> {
+            friend AVL_tree;
             private:
                 struct StepI {
                     std::shared_ptr<const Node> node;
@@ -49,19 +52,28 @@ class AVL_tree {
                 std::shared_ptr<const Node> pointer_;
                 Stack<StepI> way_;
             public:
-                IteratorConst ();
-                explicit IteratorConst (std::shared_ptr<Node> &);
-                IteratorConst & operator++();
-                IteratorConst & operator--();
+                IteratorBi ();
+                explicit IteratorBi (std::shared_ptr<Node> &);
+                virtual IteratorBi & operator++();
+                virtual IteratorBi & operator--();
                 const T & operator*() const;
                 const T * operator->() const;
-                bool operator==(const IteratorConst &) const;
-                bool operator!=(const IteratorConst &) const;
+                bool operator==(const IteratorBi &) const;
+                bool operator!=(const IteratorBi &) const;
+            private:
+                IteratorBi & first();
+                IteratorBi & last();
+        };
+        class IteratorBiRev : public IteratorBi {
+            public:
+                IteratorBiRev ();
+                explicit IteratorBiRev (std::shared_ptr<Node> &);
+                virtual IteratorBiRev & operator++();
+                virtual IteratorBiRev & operator--();
         };
     private:
         std::shared_ptr<Node> root_;
         size_t size_;
-        std::shared_ptr<Node> end_;
         const Compare compare_;
     public:
         AVL_tree ();
@@ -75,8 +87,10 @@ class AVL_tree {
         bool erase(const T && value);
         Compare key_comp() const;
 
-        const IteratorConst end();
-        const IteratorConst begin();
+        const IteratorBi end();
+        const IteratorBi begin();
+        const IteratorBiRev rend();
+        const IteratorBiRev rbegin();
 
         AVL_tree (const AVL_tree &) = delete;
         AVL_tree (const AVL_tree &&) = delete;
