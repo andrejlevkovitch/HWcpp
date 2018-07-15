@@ -27,7 +27,6 @@ class Stack {
                 std::shared_ptr<Node> pointer_;
             public:
                 Iterator ();
-                explicit Iterator (const std::shared_ptr<Node> &);
                 W & operator*() const;
                 W * operator->() const;
                 Iterator & operator++();
@@ -41,7 +40,7 @@ class Stack {
         Stack ();
         Stack (const Stack &);
         Stack & operator=(const Stack &);
-        const size_t size() const;
+        size_t size() const;
         bool empty() const;
         W & push(const W & value);//generated length error
         W & push(const W && value);//generaded length error

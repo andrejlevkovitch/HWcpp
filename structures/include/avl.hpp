@@ -14,8 +14,8 @@ template<typename T, typename Compare = std::less<T>>
 class AVL_tree {
     public:
         static const size_t max_size();
-        static const bool LEFT {0};
-        static const bool RIGHT {1};
+        static const bool LEFT {false};
+        static const bool RIGHT {true};
     private:
         class Node {
             friend AVL_tree;
@@ -53,7 +53,6 @@ class AVL_tree {
                 Stack<StepI> way_;
             public:
                 IteratorBi ();
-                explicit IteratorBi (const std::shared_ptr<Node> &);
                 virtual IteratorBi & operator++();
                 virtual IteratorBi & operator--();
                 const T & operator*() const;
@@ -68,7 +67,6 @@ class AVL_tree {
         class IteratorBiRev : public IteratorBi {
             public:
                 IteratorBiRev ();
-                explicit IteratorBiRev (const std::shared_ptr<Node> &);
                 virtual IteratorBiRev & operator++();
                 virtual IteratorBiRev & operator--();
         };
@@ -80,27 +78,31 @@ class AVL_tree {
         const Compare compare_;
     public:
         AVL_tree ();
-        const size_t size() const;
+        size_t size() const;
         bool empty() const;
-        bool insert(const T & value);//generated length error
-        bool insert(const T && value);//generated length error
-        bool find(const T & value) const;
-        bool find(const T && value) const;
-        bool erase(const T & value);
-        bool erase(const T && value);
+        void insert(const T & value);//generated length error
+        void insert(const T && value);//generated length error
+        IteratorBi find(const T & value) const;
+        IteratorBi find(const T && value) const;
+        void erase(const T & value);
+        void erase(const T && value);
+
+        void clear();
+
         Compare key_comp() const;
 
-        const IteratorBi end();
-        const IteratorBi begin();
-        const IteratorBiRev rend();
-        const IteratorBiRev rbegin();
+        IteratorBi end() const;
+        IteratorBi begin() const;
+        IteratorBiRev rend() const;
+        IteratorBiRev rbegin() const;
 
         AVL_tree (const AVL_tree &) = delete;
         AVL_tree (const AVL_tree &&) = delete;
         AVL_tree &operator=(const AVL_tree &) = delete;
         AVL_tree &operator=(const AVL_tree &&) = delete;
     private:
-        void turn(std::shared_ptr<Node> * node);
+        void turn(std::shared_ptr<Node> *);
+        void walk(std::shared_ptr<Node> &);
 };
 
 #include"avl_.hpp"

@@ -9,11 +9,6 @@ AVL_tree<T, Compare>::IteratorBi::IteratorBi () : pointer_ {nullptr}
 {
 }
 
-template<typename T, typename Compare>
-AVL_tree<T, Compare>::IteratorBi::IteratorBi (
-        const std::shared_ptr<Node> & node) : pointer_ {node}
-{
-}
 
 template<typename T, typename Compare>
 typename AVL_tree<T, Compare>::IteratorBi &
@@ -124,12 +119,6 @@ bool AVL_tree<T, Compare>::IteratorBi::operator!=(
 
 template<typename T, typename Compare>
 AVL_tree<T, Compare>::IteratorBiRev::IteratorBiRev () : IteratorBi {}
-{
-}
-
-template<typename T, typename Compare>
-AVL_tree<T, Compare>::IteratorBiRev::IteratorBiRev (
-        const std::shared_ptr<Node> & node) : IteratorBi {node}
 {
 }
 

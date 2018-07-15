@@ -51,7 +51,7 @@ Stack<W> & Stack<W>::operator=(const Stack & in)
 
 
 template<typename W>
-const size_t Stack<W>::size() const
+size_t Stack<W>::size() const
 {
     return size_;
 }

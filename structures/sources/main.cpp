@@ -42,6 +42,13 @@ int main(int argc, char *argv[])
         else {
             std::cout << "no find" << std::endl;
         }
+        finded = alfa.find(28851);
+        if (finded != alfa.end()) {
+            std::cout << *finded << std::endl;
+        }
+        else {
+            std::cout << "no find" << std::endl;
+        }
 
 
         std::cout << "write in file start\n";

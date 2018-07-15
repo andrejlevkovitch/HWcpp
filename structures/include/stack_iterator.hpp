@@ -10,12 +10,6 @@ Stack<W>::Iterator::Iterator ()
 }
 
 template<typename W>
-Stack<W>::Iterator::Iterator (const std::shared_ptr<Node> & in) :
-    pointer_ {in}
-{
-}
-
-template<typename W>
 W & Stack<W>::Iterator::operator*() const
 {
     return pointer_->info_;
