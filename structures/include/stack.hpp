@@ -51,8 +51,13 @@ class Stack {
         Iterator begin() const;
         Iterator end() const;
 
+        bool operator!=(const Stack &) const;
+        bool operator==(const Stack &) const;
+
         Stack (const Stack &&) = delete;
         Stack & operator=(const Stack &&) = delete;
+    private:
+        void rekurs_init(std::shared_ptr<Node>);
 };
 
 #include"stack_.hpp"

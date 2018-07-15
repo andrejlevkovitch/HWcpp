@@ -18,32 +18,32 @@ Stack<W>::Stack () :  head_ {nullptr}, size_ {0}
 }
 
 template<typename W>
+void Stack<W>::rekurs_init(std::shared_ptr<Node> in)
+{
+    if (in) {
+        rekurs_init(in->previous_);
+        push(in->info_);
+    }
+    return;
+}
+
+template<typename W>
 Stack<W>::Stack (const Stack & in) : size_ {0}
 {
     if (!in.empty()) {
-        for (int i {}; i < in.size(); ++i) {
-            push(in.head());
-        }
-        for (auto i {begin()}, j {in.begin()}; i != end(); ++i, ++j) {
-            *i = *j;
-        }
+        rekurs_init(in.head_);
     }
 }
 
 template<typename W>
 Stack<W> & Stack<W>::operator=(const Stack & in)
 {
-    size_ = in.size_;
-    if (!in.empty()) {
-        Stack<W> temp;
-        for (auto point {in.head_};
-                point;
-                point = point->previous_) {
-            temp.push(point->info_);
+    if (*this != in) {
+        while (!empty()) {
+            pop();
         }
-        while (!temp.empty()) {
-            push(temp.head());
-            temp.pop();
+        if (!in.empty()) {
+            rekurs_init(in.head_);
         }
     }
     return *this;
@@ -127,4 +127,17 @@ typename Stack<W>::Iterator Stack<W>::end() const
     Iterator void_end_node;
     void_end_node.pointer_ = nullptr;
     return void_end_node;
+}
+
+
+template<typename W>
+bool Stack<W>::operator!=(const Stack & rhs) const
+{
+    return (head_ != rhs.head_) ? true : false;
+}
+
+template<typename W>
+bool Stack<W>::operator==(const Stack & rhs) const
+{
+    return (head_ == rhs.head_) ? true : false;
 }
