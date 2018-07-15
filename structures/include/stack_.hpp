@@ -5,7 +5,7 @@
 #include"stack.hpp"
 
 template<typename W>
-const size_t Stack<W>::max_size()
+size_t Stack<W>::max_size()
 {
     static const size_t retvalue {1000};
     return retvalue;

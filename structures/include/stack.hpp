@@ -10,7 +10,7 @@
 template<typename W>
 class Stack {
     public:
-        static const size_t max_size();
+        static size_t max_size();
     private:
         class Node {
             public:

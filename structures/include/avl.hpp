@@ -13,7 +13,7 @@
 template<typename T, typename Compare = std::less<T>>
 class AVL_tree {
     public:
-        static const size_t max_size();
+        static size_t max_size();
         static const bool LEFT {false};
         static const bool RIGHT {true};
     private:
@@ -24,6 +24,7 @@ class AVL_tree {
             private:
                 std::shared_ptr<Node> child_[N_NODE];
                 const T key_;
+                unsigned short counter_;
                 signed char balance_;
             public:
                 Node ();
@@ -50,6 +51,7 @@ class AVL_tree {
                 };
             private:
                 std::shared_ptr<const Node> pointer_;
+                unsigned short count_;
                 Stack<StepI> way_;
             public:
                 IteratorBi ();
@@ -84,6 +86,8 @@ class AVL_tree {
         void insert(const T && value);//generated length error
         IteratorBi find(const T & value) const;
         IteratorBi find(const T && value) const;
+        unsigned short count(const T & value) const;
+        unsigned short count(const T && value) const;
         void erase(const T & value);
         void erase(const T && value);
 

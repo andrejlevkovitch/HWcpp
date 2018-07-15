@@ -5,7 +5,7 @@
 #include"avl.hpp"
 
 template<typename T, typename Compare>
-const size_t AVL_tree<T, Compare>::max_size()
+size_t AVL_tree<T, Compare>::max_size()
 {
     static const size_t retvalue {1000000};
     return retvalue;
@@ -16,7 +16,7 @@ template<typename T, typename Compare>
 typename AVL_tree<T, Compare>::IteratorBi
 AVL_tree<T, Compare>::end() const
 {
-    void_end_node_->child_[0] = void_end_node_->child_[1] = root_;
+    void_end_node_->child_[0] = root_;
     IteratorBi endIter;
     endIter.pointer_ = void_end_node_;
     return endIter;
@@ -35,7 +35,7 @@ template<typename T, typename Compare>
 typename AVL_tree<T, Compare>::IteratorBiRev
 AVL_tree<T, Compare>::rend() const
 {
-    void_begin_node_->child_[0] = void_begin_node_->child_[1] = root_;
+    void_begin_node_->child_[1] = root_;
     IteratorBiRev endIter;
     endIter.pointer_ = void_begin_node_;
     return endIter;
@@ -74,7 +74,7 @@ template<typename T, typename Compare>
 void AVL_tree<T, Compare>::insert(const T & value)
 {
     if (size_ >= max_size()) {
-        throw std::length_error("more than max size");
+        throw std::length_error("more than max size tree");
     }
 
     auto in_node{root_};
@@ -87,6 +87,10 @@ void AVL_tree<T, Compare>::insert(const T & value)
         }
         else {
             if (in_node->key_ == value) {
+                if (!++(in_node->counter_)) {
+                    throw std::length_error("more than max size element");
+                }
+                ++size_;
                 return;
             }
             else {
@@ -121,7 +125,7 @@ void AVL_tree<T, Compare>::insert(const T & value)
         }
     }
 
-    size_++;
+    ++size_;
     return;
 }
 
@@ -129,7 +133,7 @@ template<typename T, typename Compare>
 void AVL_tree<T, Compare>::insert(const T && value)
 {
     if (size_ >= max_size()) {
-        throw std::length_error("more than max size");
+        throw std::length_error("more than max size tree");
     }
 
     auto in_node{root_};
@@ -142,6 +146,10 @@ void AVL_tree<T, Compare>::insert(const T && value)
         }
         else {
             if (in_node->key_ == value) {
+                if (!++(in_node->counter_)) {
+                    throw std::length_error("more than max size element");
+                }
+                ++size_;
                 return;
             }
             else {
@@ -176,7 +184,7 @@ void AVL_tree<T, Compare>::insert(const T && value)
         }
     }
 
-    size_++;
+    ++size_;
     return;
 }
 
@@ -219,6 +227,20 @@ AVL_tree<T, Compare>::find(const T && value) const
 }
 
 template<typename T, typename Compare>
+unsigned short AVL_tree<T, Compare>::count(const T & value) const
+{
+    auto it {find(value)};
+    return (it != end()) ? it.pointer_->counter_ : 0;
+}
+
+template<typename T, typename Compare>
+unsigned short AVL_tree<T, Compare>::count(const T && value) const
+{
+    auto it {find(value)};
+    return (it != end()) ? it.pointer_->counter_ : 0;
+}
+
+template<typename T, typename Compare>
 void AVL_tree<T, Compare>::erase(const T & value)
 {
     auto erase_node {root_};
@@ -238,6 +260,10 @@ void AVL_tree<T, Compare>::erase(const T & value)
                 erase_node = *q_node;
             }
         }
+    }
+    if (--(erase_node->counter_)) {
+        --size_;
+        return;
     }
     if (!erase_node->child_[0]) {
         *q_node = erase_node->child_[1];
@@ -292,7 +318,7 @@ void AVL_tree<T, Compare>::erase(const T & value)
         }
     }
     erase_node.reset();
-    size_--;
+    --size_;
     return;
 }
 
@@ -317,6 +343,10 @@ void AVL_tree<T, Compare>::erase(const T && value)
             }
         }
     }
+    if (--(erase_node->counter_)) {
+        --size_;
+        return;
+    }
     if (!erase_node->child_[0]) {
         *q_node = erase_node->child_[1];
     }
@@ -370,7 +400,7 @@ void AVL_tree<T, Compare>::erase(const T && value)
         }
     }
     erase_node.reset();
-    size_--;
+    --size_;
     return;
 }
 

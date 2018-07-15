@@ -5,7 +5,7 @@
 #include"avl.hpp"
 
 template<typename T, typename Compare>
-AVL_tree<T, Compare>::IteratorBi::IteratorBi () : pointer_ {nullptr}
+AVL_tree<T, Compare>::IteratorBi::IteratorBi () : pointer_ {nullptr}, count_ {}
 {
 }
 
@@ -44,6 +44,10 @@ template<typename T, typename Compare>
 typename AVL_tree<T, Compare>::IteratorBi &
 AVL_tree<T, Compare>::IteratorBi::operator++()
 {
+    if (++(this->count_) < this->pointer_->counter_) {
+        return *this;
+    }
+    this->count_ = 0;
     if (pointer_->child_[RIGHT]) {
         way_.push(StepI {RIGHT, pointer_});
         pointer_ = pointer_->child_[RIGHT];
@@ -56,7 +60,7 @@ AVL_tree<T, Compare>::IteratorBi::operator++()
     }
     else {
         for (;
-                (way_.size() > 1) && way_.head().direction == RIGHT;
+                way_.head().direction == RIGHT;
                 way_.pop()) {
         }
         pointer_ = way_.head().node;
@@ -69,6 +73,10 @@ template<typename T, typename Compare>
 typename AVL_tree<T, Compare>::IteratorBi &
 AVL_tree<T, Compare>::IteratorBi::operator--()
 {
+    if (++(this->count_) < this->pointer_->counter_) {
+        return *this;
+    }
+    this->count_ = 0;
     if (pointer_->child_[LEFT]) {
         way_.push(StepI {LEFT, pointer_});
         pointer_ = pointer_->child_[LEFT];
@@ -81,7 +89,7 @@ AVL_tree<T, Compare>::IteratorBi::operator--()
     }
     else {
         for (;
-                (way_.size() > 1) && way_.head().direction == LEFT;
+                way_.head().direction == LEFT;
                 way_.pop()) {
         }
         pointer_ = way_.head().node;

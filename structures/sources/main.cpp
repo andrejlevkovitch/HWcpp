@@ -34,6 +34,8 @@ int main(int argc, char *argv[])
 
         std::cout << std::endl;
 
+        std::cout << "Element 29995 met " <<
+            alfa.count(29995) << " times" << std::endl;
 
         auto finded = std::find(alfa.begin(), alfa.end(), 29970);
         if (finded != alfa.end()) {
@@ -58,8 +60,8 @@ int main(int argc, char *argv[])
 //          std::for_each(
 //                  alfa.rbegin(), alfa.rend(),
 //                  [&](auto & element){fout << element << ' ';});
-            for (auto & temp : alfa) {
-                fout << temp << ' ';
+            for (auto & i : alfa) {
+                fout << i << ' ';
             }
             fout.close();
         }
