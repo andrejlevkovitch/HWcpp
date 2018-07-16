@@ -87,7 +87,7 @@ void AVL_tree<T, Compare>::insert(const T & value)
         }
         else {
             if (in_node->key_ == value) {
-                if (!++(in_node->counter_)) {
+                if (++(in_node->counter_) == 0) {
                     throw std::length_error("more than max size element");
                 }
                 ++size_;
@@ -146,7 +146,7 @@ void AVL_tree<T, Compare>::insert(const T && value)
         }
         else {
             if (in_node->key_ == value) {
-                if (!++(in_node->counter_)) {
+                if (++(in_node->counter_) == 0) {
                     throw std::length_error("more than max size element");
                 }
                 ++size_;
@@ -261,60 +261,58 @@ void AVL_tree<T, Compare>::erase(const T & value)
             }
         }
     }
-    if (--(erase_node->counter_)) {
-        --size_;
-        return;
-    }
-    if (!erase_node->child_[0]) {
-        *q_node = erase_node->child_[1];
-    }
-    else {
-        auto y_node {erase_node->child_[0]};
-        way.push(Step {0, q_node});
-        if (!y_node->child_[1]) {
-            y_node->child_[1] = erase_node->child_[1];
-            y_node->balance_ = erase_node->balance_;
-            *q_node = y_node;
+    if (--(erase_node->counter_) == 0) {
+        if (!erase_node->child_[0]) {
+            *q_node = erase_node->child_[1];
         }
         else {
-            auto x_node {y_node->child_[1]};
-            auto changed_node {Step {1, nullptr}};
-            way.push(Step {1, nullptr});
-            while (x_node->child_[1]) {
-                way.push(Step {1, &y_node->child_[1]});
-                y_node = x_node;
-                x_node = x_node->child_[1];
+            auto y_node {erase_node->child_[0]};
+            way.push(Step {0, q_node});
+            if (!y_node->child_[1]) {
+                y_node->child_[1] = erase_node->child_[1];
+                y_node->balance_ = erase_node->balance_;
+                *q_node = y_node;
             }
+            else {
+                auto x_node {y_node->child_[1]};
+                auto changed_node {Step {1, nullptr}};
+                way.push(Step {1, nullptr});
+                while (x_node->child_[1]) {
+                    way.push(Step {1, &y_node->child_[1]});
+                    y_node = x_node;
+                    x_node = x_node->child_[1];
+                }
 
-            y_node->child_[1] = x_node->child_[0];
-            x_node->child_[0] = erase_node->child_[0];
-            x_node->child_[1] = erase_node->child_[1];
+                y_node->child_[1] = x_node->child_[0];
+                x_node->child_[0] = erase_node->child_[0];
+                x_node->child_[1] = erase_node->child_[1];
 
-            changed_node.node = &x_node->child_[0];
+                changed_node.node = &x_node->child_[0];
 
-            x_node->balance_ = erase_node->balance_;
+                x_node->balance_ = erase_node->balance_;
 
-            *q_node = x_node;
-        }
-    }
-    while (!way.empty()) {
-        if ((*way.head().node)->balance_) {
-            (*way.head().node)->balance_ = (way.head().direction) ? 
-                (*way.head().node)->balance_ + 1 :
-                (*way.head().node)->balance_ - 1;
-            if (abs ((*way.head().node)->balance_) == 2) {
-                turn(way.head().node);
+                *q_node = x_node;
             }
         }
-        else {
-            (*way.head().node)->balance_ = (way.head().direction) ? 1 : -1;
-        }
+        while (!way.empty()) {
+            if ((*way.head().node)->balance_) {
+                (*way.head().node)->balance_ = (way.head().direction) ? 
+                    (*way.head().node)->balance_ + 1 :
+                    (*way.head().node)->balance_ - 1;
+                if (abs ((*way.head().node)->balance_) == 2) {
+                    turn(way.head().node);
+                }
+            }
+            else {
+                (*way.head().node)->balance_ = (way.head().direction) ? 1 : -1;
+            }
 
-        if (!(*way.head().node)->balance_) {
-            break;
-        }
-        else {
-            way.pop();
+            if (!(*way.head().node)->balance_) {
+                break;
+            }
+            else {
+                way.pop();
+            }
         }
     }
     erase_node.reset();
@@ -343,60 +341,58 @@ void AVL_tree<T, Compare>::erase(const T && value)
             }
         }
     }
-    if (--(erase_node->counter_)) {
-        --size_;
-        return;
-    }
-    if (!erase_node->child_[0]) {
-        *q_node = erase_node->child_[1];
-    }
-    else {
-        auto y_node {erase_node->child_[0]};
-        way.push(Step {0, q_node});
-        if (!y_node->child_[1]) {
-            y_node->child_[1] = erase_node->child_[1];
-            y_node->balance_ = erase_node->balance_;
-            *q_node = y_node;
+    if (--(erase_node->counter_) == 0) {
+        if (!erase_node->child_[0]) {
+            *q_node = erase_node->child_[1];
         }
         else {
-            auto x_node {y_node->child_[1]};
-            auto changed_node {Step {1, nullptr}};
-            way.push(Step {1, nullptr});
-            while (x_node->child_[1]) {
-                way.push(Step {1, &y_node->child_[1]});
-                y_node = x_node;
-                x_node = x_node->child_[1];
+            auto y_node {erase_node->child_[0]};
+            way.push(Step {0, q_node});
+            if (!y_node->child_[1]) {
+                y_node->child_[1] = erase_node->child_[1];
+                y_node->balance_ = erase_node->balance_;
+                *q_node = y_node;
             }
+            else {
+                auto x_node {y_node->child_[1]};
+                auto changed_node {Step {1, nullptr}};
+                way.push(Step {1, nullptr});
+                while (x_node->child_[1]) {
+                    way.push(Step {1, &y_node->child_[1]});
+                    y_node = x_node;
+                    x_node = x_node->child_[1];
+                }
 
-            y_node->child_[1] = x_node->child_[0];
-            x_node->child_[0] = erase_node->child_[0];
-            x_node->child_[1] = erase_node->child_[1];
+                y_node->child_[1] = x_node->child_[0];
+                x_node->child_[0] = erase_node->child_[0];
+                x_node->child_[1] = erase_node->child_[1];
 
-            changed_node.node = &x_node->child_[0];
+                changed_node.node = &x_node->child_[0];
 
-            x_node->balance_ = erase_node->balance_;
+                x_node->balance_ = erase_node->balance_;
 
-            *q_node = x_node;
-        }
-    }
-    while (!way.empty()) {
-        if ((*way.head().node)->balance_) {
-            (*way.head().node)->balance_ = (way.head().direction) ? 
-                (*way.head().node)->balance_ + 1 :
-                (*way.head().node)->balance_ - 1;
-            if (abs ((*way.head().node)->balance_) == 2) {
-                turn(way.head().node);
+                *q_node = x_node;
             }
         }
-        else {
-            (*way.head().node)->balance_ = (way.head().direction) ? 1 : -1;
-        }
+        while (!way.empty()) {
+            if ((*way.head().node)->balance_) {
+                (*way.head().node)->balance_ = (way.head().direction) ? 
+                    (*way.head().node)->balance_ + 1 :
+                    (*way.head().node)->balance_ - 1;
+                if (abs ((*way.head().node)->balance_) == 2) {
+                    turn(way.head().node);
+                }
+            }
+            else {
+                (*way.head().node)->balance_ = (way.head().direction) ? 1 : -1;
+            }
 
-        if (!(*way.head().node)->balance_) {
-            break;
-        }
-        else {
-            way.pop();
+            if (!(*way.head().node)->balance_) {
+                break;
+            }
+            else {
+                way.pop();
+            }
         }
     }
     erase_node.reset();
