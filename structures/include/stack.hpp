@@ -40,6 +40,8 @@ class Stack {
         Stack ();
         Stack (const Stack &);
         Stack & operator=(const Stack &);
+        Stack (const Stack &&);
+        Stack & operator=(const Stack &&);
         size_t size() const;
         bool empty() const;
         W & push(const W & value);//generated length error
@@ -53,8 +55,6 @@ class Stack {
         bool operator!=(const Stack &) const;
         bool operator==(const Stack &) const;
 
-        Stack (const Stack &&) = delete;
-        Stack & operator=(const Stack &&) = delete;
     private:
         void rekurs_init(std::shared_ptr<Node>);
 };

@@ -49,6 +49,28 @@ Stack<W> & Stack<W>::operator=(const Stack & in)
     return *this;
 }
 
+template<typename W>
+Stack<W>::Stack (const Stack && in) : size_ {0}
+{
+    if (!in.empty()) {
+        rekurs_init(in.head_);
+    }
+}
+
+template<typename W>
+Stack<W> & Stack<W>::operator=(const Stack && in)
+{
+    if (*this != in) {
+        while (!empty()) {
+            pop();
+        }
+        if (!in.empty()) {
+            rekurs_init(in.head_);
+        }
+    }
+    return *this;
+}
+
 
 template<typename W>
 size_t Stack<W>::size() const
