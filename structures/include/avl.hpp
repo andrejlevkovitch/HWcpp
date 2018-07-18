@@ -80,6 +80,7 @@ class AVL_tree {
         const Compare compare_;
     public:
         AVL_tree ();
+        AVL_tree (const Compare & comp);
         size_t size() const;
         bool empty() const;
         void insert(const T & value);//generated length error

@@ -71,6 +71,14 @@ AVL_tree<T, Compare>::AVL_tree () : root_ {nullptr}, size_ {0}
 }
 
 template<typename T, typename Compare>
+AVL_tree<T, Compare>::AVL_tree (const Compare & comp) :
+    root_ {nullptr}, size_ {0}, compare_ {comp}
+{
+    void_end_node_ = std::make_shared<Node>();
+    void_begin_node_ = std::make_shared<Node>();
+}
+
+template<typename T, typename Compare>
 void AVL_tree<T, Compare>::insert(const T & value)
 {
     if (size_ >= max_size()) {

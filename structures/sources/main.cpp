@@ -16,7 +16,10 @@ int main(int argc, char *argv[])
             bool operator()(int a, int b) const {return a > b;};
         };
 
-        AVL_tree<int, Comp> alfa;
+        auto compare = [](int a, int b){return a > b;};
+
+        AVL_tree<int, decltype(compare)> alfa {compare};
+//      AVL_tree<int, Comp> alfa;
 
         int size {};
         int temp {};
