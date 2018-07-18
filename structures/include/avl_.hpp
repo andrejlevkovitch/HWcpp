@@ -98,6 +98,7 @@ AVL_tree<T, Compare> & AVL_tree<T, Compare>::operator=(const AVL_tree & in)
     for (auto & i : in) {
         insert(i);
     }
+    return *this;
 }
 
 template<typename T, typename Compare>
@@ -118,6 +119,7 @@ AVL_tree<T, Compare> & AVL_tree<T, Compare>::operator=(AVL_tree && in)
     void_begin_node_ = in.void_begin_node_;
     in.root_ = nullptr;
     in.size_ = 0;
+    return *this;
 }
 
 
