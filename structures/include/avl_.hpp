@@ -106,8 +106,6 @@ AVL_tree<T, Compare>::AVL_tree (AVL_tree && in) :
     root_ {in.root_}, size_ {in.size_}, void_end_node_ {in.void_end_node_},
     void_begin_node_ {in.void_begin_node_}
 {
-    in.root_ = nullptr;
-    in.size_ = 0;
 }
 
 template<typename T, typename Compare>
@@ -117,8 +115,6 @@ AVL_tree<T, Compare> & AVL_tree<T, Compare>::operator=(AVL_tree && in)
     size_ = in.size_;
     void_end_node_ = in.void_end_node_;
     void_begin_node_ = in.void_begin_node_;
-    in.root_ = nullptr;
-    in.size_ = 0;
     return *this;
 }
 

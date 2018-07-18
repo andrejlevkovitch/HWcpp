@@ -52,8 +52,6 @@ Stack<W> & Stack<W>::operator=(const Stack & in)
 template<typename W>
 Stack<W>::Stack (Stack && in) : head_ {in.head_}, size_ {in.size_}
 {
-    in.head_ = nullptr;
-    in.size_ = 0;
 }
 
 template<typename W>
@@ -61,8 +59,6 @@ Stack<W> & Stack<W>::operator=(Stack && in)
 {
     head_ = in.head_;
     size_ = in.size_;
-    in.head_ = nullptr;
-    in.size_ = 0;
     return *this;
 }
 
