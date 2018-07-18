@@ -50,24 +50,19 @@ Stack<W> & Stack<W>::operator=(const Stack & in)
 }
 
 template<typename W>
-Stack<W>::Stack (const Stack && in) : size_ {0}
+Stack<W>::Stack (Stack && in) : head_ {in.head_}, size_ {in.size_}
 {
-    if (!in.empty()) {
-        rekurs_init(in.head_);
-    }
+    in.head_ = nullptr;
+    in.size_ = 0;
 }
 
 template<typename W>
-Stack<W> & Stack<W>::operator=(const Stack && in)
+Stack<W> & Stack<W>::operator=(Stack && in)
 {
-    if (*this != in) {
-        while (!empty()) {
-            pop();
-        }
-        if (!in.empty()) {
-            rekurs_init(in.head_);
-        }
-    }
+    head_ = in.head_;
+    size_ = in.size_;
+    in.head_ = nullptr;
+    in.size_ = 0;
     return *this;
 }
 
