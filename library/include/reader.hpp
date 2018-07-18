@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include<iostream>
 #include<cstdbool>
 #include<string>
 
@@ -13,4 +14,7 @@ class Reader {
         Reader ();
         Reader (const std::string & name, const std::string & surname);
         bool operator<(const Reader &) const;
+        bool operator==(const Reader &) const;
+        bool operator!=(const Reader &) const;
+        friend std::ostream & operator<<(std::ostream &, const Reader &);
 };

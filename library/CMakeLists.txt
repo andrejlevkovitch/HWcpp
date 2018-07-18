@@ -30,5 +30,9 @@ include_directories("./include")
 include_directories("../structures/include")
 
 set(MAIN_SRC sources/main.cpp)
+set(INTERFACE_LIB "interface")
+file(GLOB INTERFACE_SRC "sources/interface/*.cpp")
 
 add_executable(${PROJECT_NAME} ${MAIN_SRC})
+add_library(${INTERFACE_LIB} STATIC ${INTERFACE_SRC})
+target_link_libraries(${PROJECT_NAME} ${INTERFACE_LIB})
