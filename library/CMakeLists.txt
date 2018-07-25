@@ -26,13 +26,22 @@ message(STATUS "cxx compiler " ${CMAKE_CXX_COMPILER})
 set(CMAKE_CXX_STANDARD 14)
 add_definitions(-Wall)
 
+find_package(Qt5Widgets REQUIRED)
+
+set(CMAKE_AUTOMOC on)
+set(CMAKE_AUTOUIC on)
+set(CMAKE_AUTORCC on)
+
 include_directories("./include")
-include_directories("../structures/include")
 
 set(MAIN_SRC sources/main.cpp)
 set(INTERFACE_LIB "interface")
-file(GLOB INTERFACE_SRC "sources/interface/*.cpp")
+file(GLOB INTERFACE_SRC "sources/interface/*.cpp" "include/screen.hpp")
+set(BOOKLIB_LIB "booklib")
+file(GLOB BOOKLIB_SRC "sources/book_library/*.cpp")
 
 add_executable(${PROJECT_NAME} ${MAIN_SRC})
-add_library(${INTERFACE_LIB} STATIC ${INTERFACE_SRC})
-target_link_libraries(${PROJECT_NAME} ${INTERFACE_LIB})
+add_library(${BOOKLIB_LIB} SHARED ${BOOKLIB_SRC})
+add_library(${INTERFACE_LIB} SHARED ${INTERFACE_SRC})
+target_link_libraries(${INTERFACE_LIB} Qt5::Widgets)
+target_link_libraries(${PROJECT_NAME} ${INTERFACE_LIB} ${BOOKLIB_LIB} Qt5::Widgets)

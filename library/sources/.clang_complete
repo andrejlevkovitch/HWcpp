@@ -1,2 +1,5 @@
 -I../include
--I../../structures/include
+-fPIC
+-I/opt/qt510/include
+-I/opt/qt510/include/QtWidgets
+-I/opt/qt510/include/QtCore
