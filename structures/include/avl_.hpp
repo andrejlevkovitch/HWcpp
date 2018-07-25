@@ -79,6 +79,47 @@ AVL_tree<T, Compare>::AVL_tree (const Compare & comp) :
 }
 
 template<typename T, typename Compare>
+AVL_tree<T, Compare>::AVL_tree (const AVL_tree & in) :
+    root_ {nullptr}, size_ {0}, void_end_node_ {in.void_end_node_},
+    void_begin_node_ {in.void_begin_node_}
+{
+    for (auto & i : in) {
+        insert(i);
+    }
+}
+
+template<typename T, typename Compare>
+AVL_tree<T, Compare> & AVL_tree<T, Compare>::operator=(const AVL_tree & in)
+{
+    root_ = nullptr;
+    size_ = 0;
+    void_end_node_ = in.void_end_node_;
+    void_begin_node_ = in.void_begin_node_;
+    for (auto & i : in) {
+        insert(i);
+    }
+    return *this;
+}
+
+template<typename T, typename Compare>
+AVL_tree<T, Compare>::AVL_tree (AVL_tree && in) :
+    root_ {in.root_}, size_ {in.size_}, void_end_node_ {in.void_end_node_},
+    void_begin_node_ {in.void_begin_node_}
+{
+}
+
+template<typename T, typename Compare>
+AVL_tree<T, Compare> & AVL_tree<T, Compare>::operator=(AVL_tree && in)
+{
+    root_ = in.root_;
+    size_ = in.size_;
+    void_end_node_ = in.void_end_node_;
+    void_begin_node_ = in.void_begin_node_;
+    return *this;
+}
+
+
+template<typename T, typename Compare>
 void AVL_tree<T, Compare>::insert(const T & value)
 {
     if (size_ >= max_size()) {

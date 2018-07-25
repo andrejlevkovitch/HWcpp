@@ -81,6 +81,10 @@ class AVL_tree {
     public:
         AVL_tree ();
         AVL_tree (const Compare & comp);
+        AVL_tree (const AVL_tree &);
+        AVL_tree (AVL_tree &&);
+        AVL_tree &operator=(const AVL_tree &);
+        AVL_tree &operator=(AVL_tree &&);
         size_t size() const;
         bool empty() const;
         void insert(const T & value);//generated length error
@@ -101,10 +105,6 @@ class AVL_tree {
         IteratorBiRev rend() const;
         IteratorBiRev rbegin() const;
 
-        AVL_tree (const AVL_tree &) = delete;
-        AVL_tree (const AVL_tree &&) = delete;
-        AVL_tree &operator=(const AVL_tree &) = delete;
-        AVL_tree &operator=(const AVL_tree &&) = delete;
     private:
         void turn(std::shared_ptr<Node> *);
         void walk(std::shared_ptr<Node> &);

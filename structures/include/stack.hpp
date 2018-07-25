@@ -40,8 +40,8 @@ class Stack {
         Stack ();
         Stack (const Stack &);
         Stack & operator=(const Stack &);
-        Stack (const Stack &&);
-        Stack & operator=(const Stack &&);
+        Stack (Stack &&);
+        Stack & operator=(Stack &&);
         size_t size() const;
         bool empty() const;
         W & push(const W & value);//generated length error
