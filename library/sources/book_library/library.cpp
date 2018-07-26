@@ -8,36 +8,107 @@
 
 Library::Library(const std::string &fileBook, const std::string &fileJournal)
     : file_bookcase_{fileBook}, file_journal_{fileJournal} {
-  std::fstream fin;
-  fin.open(file_bookcase_);
+  std::ifstream fin;
+  fin.open(file_bookcase_, std::ios_base::in | std::ios_base::binary);
   if (fin.is_open()) {
+    size_t size{};
     std::string name;
     std::string autor;
-    while (1) {
-      std::getline(fin, name);
-      std::getline(fin, autor);
+    while (true) {
+      size = 0;
+      fin.read(reinterpret_cast<char *>(&size), sizeof(size));
+      name.resize(size);
+      fin.read(reinterpret_cast<char *>(&name[0]), size);
+      size = 0;
+      fin.read(reinterpret_cast<char *>(&size), sizeof(size));
+      autor.resize(size);
+      fin.read(reinterpret_cast<char *>(&autor[0]), size);
+      size = 0;
+      fin.read(reinterpret_cast<char *>(&size), sizeof(unsigned short));
       if (fin.eof()) {
         break;
-      } else {
-        add_book(name, autor);
+      }
+      add_book(name, autor, size);
+    }
+    fin.close();
+  }
+  fin.open(file_journal_, std::ios_base::in | std::ios_base::binary);
+  if (fin.is_open()) {
+    size_t size{};
+    std::string name;
+    std::string surname;
+    while (true) {
+      size = 0;
+      fin.read(reinterpret_cast<char *>(&size), sizeof(size));
+      name.resize(size);
+      fin.read(reinterpret_cast<char *>(&name[0]), size);
+      size = 0;
+      fin.read(reinterpret_cast<char *>(&size), sizeof(size));
+      surname.resize(size);
+      fin.read(reinterpret_cast<char *>(&surname[0]), size);
+      size_t list_size{};
+      fin.read(reinterpret_cast<char *>(&list_size), sizeof(list_size));
+      if (fin.eof()) {
+        break;
+      }
+      auto cur_reader = register_reader(name, surname).first;
+      std::string book_name;
+      std::string book_autor;
+      for (int i = 0; i < list_size; ++i) {
+        size = 0;
+        fin.read(reinterpret_cast<char *>(&size), sizeof(size));
+        book_name.resize(size);
+        fin.read(reinterpret_cast<char *>(&book_name[0]), size);
+        size = 0;
+        fin.read(reinterpret_cast<char *>(&size), sizeof(size));
+        book_autor.resize(size);
+        fin.read(reinterpret_cast<char *>(&book_autor[0]), size);
+        cur_reader->second.push_back(Book{book_name, book_autor});
       }
     }
     fin.close();
   }
-  fin.open(file_journal_);
-  if (fin.is_open()) {
-    std::string name;
-    std::string surname;
-    while (1) {
-      std::getline(fin, name);
-      std::getline(fin, surname);
-      if (fin.eof()) {
-        break;
-      } else {
-        register_reader(name, surname);
+}
+
+Library::~Library() {
+  std::ofstream fout;
+  fout.open(file_bookcase_, std::ios_base::out | std::ios_base::binary);
+  if (fout.is_open()) {
+    size_t size{};
+    for (const auto &i : bookcase_) {
+      size = i.first.get_name().size();
+      fout.write(reinterpret_cast<char *>(&size), sizeof(size));
+      fout.write(i.first.get_name().c_str(), size);
+      size = i.first.get_autor().size();
+      fout.write(reinterpret_cast<char *>(&size), sizeof(size));
+      fout.write(i.first.get_autor().c_str(), size);
+      size = i.second;
+      fout.write(reinterpret_cast<char *>(&size), sizeof(unsigned short));
+    }
+    fout.close();
+  }
+  fout.open(file_journal_, std::ios_base::out | std::ios_base::binary);
+  if (fout.is_open()) {
+    size_t size{};
+    for (const auto &i : journal_) {
+      size = i.first.get_name().size();
+      fout.write(reinterpret_cast<char *>(&size), sizeof(size));
+      fout.write(i.first.get_name().c_str(), size);
+      size = i.first.get_surname().size();
+      fout.write(reinterpret_cast<char *>(&size), sizeof(size));
+      fout.write(i.first.get_surname().c_str(), size);
+      size = i.second.size();
+      fout.write(reinterpret_cast<char *>(&size), sizeof(size));
+      for (const auto &j : i.second) {
+        size = j.get_name().size();
+        fout.write(reinterpret_cast<char *>(&size), sizeof(size));
+        fout.write(j.get_name().c_str(), size);
+        size = j.get_autor().size();
+        fout.write(reinterpret_cast<char *>(&size), sizeof(size));
+        fout.write(j.get_autor().c_str(), size);
       }
     }
-    fin.close();
+    fout.close();
   }
 }
 
@@ -46,18 +117,19 @@ unsigned short Library::MAX_COUNT_IN_ONE_HAND() {
   return retval;
 }
 
-void Library::add_book(const Book &book) {
+void Library::add_book(const Book &book, unsigned short count) {
   auto finded = find_book(book);
   if (std::get<2>(finded)) {
-    std::get<0>(finded)->second++;
+    std::get<0>(finded)->second += count;
   } else {
-    bookcase_.insert(std::make_pair(book, 1));
+    bookcase_.insert(std::make_pair(book, count));
   }
   return;
 }
 
-void Library::add_book(const std::string &name, const std::string &autor) {
-  add_book(Book{name, autor});
+void Library::add_book(const std::string &name, const std::string &autor,
+                       unsigned short count) {
+  add_book(Book{name, autor}, count);
   return;
 }
 
@@ -127,34 +199,23 @@ std::list<Bookcase::iterator> Library::find_autor(const std::string &autor) {
   return retval;
 }
 
-void Library::show_all_books() const {
-  for (auto &i : bookcase_) {
-    std::cout << i.first << ' ' << i.second << std::endl;
-  }
+std::pair<Journal::iterator, bool>
+Library::register_reader(const Reader &reader) {
+  return journal_.insert(std::make_pair(reader, std::list<Book>{}));
 }
 
-void Library::register_reader(const Reader &reader) {
-  if (journal_.find(reader) == journal_.end()) {
-    journal_.insert(std::make_pair(reader, std::list<Book>{}));
-  } else {
-    throw std::invalid_argument{"Library already has this reader"};
-  }
-  return;
+std::pair<Journal::iterator, bool>
+Library::register_reader(const std::string &name, const std::string &surname) {
+  return register_reader(Reader{name, surname});
 }
 
-void Library::register_reader(const std::string &name,
-                              const std::string &surname) {
-  register_reader(Reader{name, surname});
+bool Library::erase_reader(const Reader &reader) {
+  return journal_.erase(reader);
 }
 
-void Library::erase_reader(const Reader &reader) {
-  journal_.erase(reader);
-  return;
-}
-
-void Library::erase_reader(const std::string &name,
+bool Library::erase_reader(const std::string &name,
                            const std::string &surname) {
-  erase_reader(Reader{name, surname});
+  return erase_reader(Reader{name, surname});
 }
 
 std::pair<Journal::iterator, bool> Library::find_reader(const Reader &reader) {
@@ -168,40 +229,21 @@ Library::find_reader(const std::string &name, const std::string &surname) {
   return find_reader(Reader{name, surname});
 }
 
-void Library::show_all_readers() const {
-  for (auto &i : journal_) {
-    std::cout << i.first << std::endl;
-  }
-  return;
-}
-
-void Library::show_readers_books(const Reader &reader) const {
-  try {
-    auto books = journal_.at(reader);
-    for (auto &i : books) {
-      std::cout << i << std::endl;
-    }
-  } catch (std::out_of_range &except) {
-    std::invalid_argument{"Library haven't this reader"};
-  }
-  return;
-}
-
 void Library::give_book_reader(const Book &book, const Reader &reader) {
-  if (!std::get<2>(find_book(book))) {
+  auto finded = find_book(book);
+  if (!std::get<2>(finded)) {
     throw std::invalid_argument{"Library haven't this book"};
   } else {
-    std::list<Book> cur_reader_list;
     try {
-      cur_reader_list = journal_.at(reader);
+      auto &cur_reader_list = journal_.at(reader);
+      if (cur_reader_list.size() < MAX_COUNT_IN_ONE_HAND()) {
+        cur_reader_list.push_back(std::get<0>(finded)->first);
+        remove_book(std::get<0>(finded)->first);
+      } else {
+        throw std::length_error{"Upper then limit"};
+      }
     } catch (std::out_of_range &except) {
       throw std::invalid_argument{"Library haven't this reader"};
-    }
-    if (cur_reader_list.size() < MAX_COUNT_IN_ONE_HAND()) {
-      cur_reader_list.push_back(book);
-      remove_book(book);
-    } else {
-      throw std::length_error{"Uper then limit"};
     }
   }
   return;
@@ -209,16 +251,21 @@ void Library::give_book_reader(const Book &book, const Reader &reader) {
 
 void Library::take_book_reader(const Book &book, const Reader &reader) {
   try {
-    auto book_list = journal_.at(reader);
-    if (std::find(book_list.begin(), book_list.end(), book) ==
+    auto &book_list = journal_.at(reader);
+    std::list<Book>::iterator finded;
+    if ((finded = std::find(book_list.begin(), book_list.end(), book)) ==
         book_list.end()) {
-      std::invalid_argument{"Reader don't have this book"};
+      throw std::invalid_argument{"Reader don't have this book"};
     } else {
-      book_list.remove(book);
-      add_book(book);
+      add_book(*finded);
+      book_list.remove(*finded);
     }
   } catch (std::out_of_range &except) {
-    std::invalid_argument{"Library haven't this reader"};
+    throw std::invalid_argument{"Library haven't this reader"};
   }
   return;
 }
+
+size_t Library::getBooksNum() const { return bookcase_.size(); }
+
+size_t Library::getReadersNum() const { return journal_.size(); }

@@ -10,7 +10,7 @@
 #include <tuple>
 #include <utility>
 
-typedef std::multimap<Book, size_t> Bookcase;
+typedef std::multimap<Book, unsigned short> Bookcase;
 typedef std::map<Reader, std::list<Book>> Journal;
 
 class Library {
@@ -25,8 +25,10 @@ private:
 
 public:
   Library(const std::string &fileBook, const std::string &fileJournal);
-  void add_book(const Book &);
-  void add_book(const std::string &name, const std::string &autor);
+  ~Library();
+  void add_book(const Book &, unsigned short count = 1);
+  void add_book(const std::string &name, const std::string &autor,
+                unsigned short count = 1);
   bool remove_book(const Book &);
   bool remove_book(const std::string &name, const std::string &autor);
   std::tuple<Bookcase::iterator, Bookcase::iterator, bool>
@@ -34,26 +36,22 @@ public:
   std::tuple<Bookcase::iterator, Bookcase::iterator, bool>
   find_book(const std::string &name, const std::string &autor = "");
   std::list<Bookcase::iterator> find_autor(const std::string &autor);
-  void show_all_books() const;
 
-  void register_reader(const Reader &); // generated invalid_argument
-  void
-  register_reader(const std::string &name,
-                  const std::string &surname); // generated invalid_argument
-  void erase_reader(const Reader &);
-  void erase_reader(const std::string &name, const std::string &surname);
+  std::pair<Journal::iterator, bool> register_reader(const Reader &);
+  std::pair<Journal::iterator, bool>
+  register_reader(const std::string &name, const std::string &surname);
+  bool erase_reader(const Reader &);
+  bool erase_reader(const std::string &name, const std::string &surname);
   std::pair<Journal::iterator, bool> find_reader(const Reader &);
   std::pair<Journal::iterator, bool> find_reader(const std::string &name,
                                                  const std::string &surname);
-  void show_all_readers() const;
-  void show_readers_books(const Reader &) const; // generated invalid_argument
-  void show_readers_books(
-      const std::string &name,
-      const std::string &surname) const; // generated invalid_argument
 
   void
   give_book_reader(const Book &,
                    const Reader &); // generated invalid_argument & lenght_error
   void take_book_reader(const Book &,
                         const Reader &); // generated invalid_argument
+
+  size_t getBooksNum() const;
+  size_t getReadersNum() const;
 };

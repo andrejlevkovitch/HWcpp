@@ -1,19 +1,21 @@
 // reader.cpp
 
 #include "reader.hpp"
+#include <algorithm>
+#include <cctype>
 
 Reader::Reader() : name_{}, surname_{} {}
 
-Reader::Reader(const std::string &name, const std::string &surname)
-    : name_{name}, surname_{surname} {}
-
-const std::string &Reader::get_name() const {
-  return name_;
+Reader::Reader(const std::string &name, const std::string &surname) {
+  name_.resize(name.size());
+  surname_.resize(surname.size());
+  std::transform(name.begin(), name.end(), name_.begin(), toupper);
+  std::transform(surname.begin(), surname.end(), surname_.begin(), toupper);
 }
 
-const std::string &Reader::get_surname() const {
-  return surname_;
-}
+const std::string &Reader::get_name() const { return name_; }
+
+const std::string &Reader::get_surname() const { return surname_; }
 
 bool Reader::operator<(const Reader &rhs) const {
   if (surname_ < rhs.surname_) {

@@ -11,19 +11,28 @@ private:
   Library library_;
 
   ::QStringList comand_list_;
+  ::QStringList operace_list_;
 
-  ::QString book_name_;
-  ::QString book_autor_;
-  ::QString reader_name_;
-  ::QString reader_surname_;
+  Book cur_book_;
+  Reader cur_reader_;
 
 public:
   Screen();
+  QPair<QString, QWidget *> create_bookcase_tab();
+  QPair<QString, QWidget *> create_journal_tab();
+
 private:
+  void set_book(const Book &);
+  void set_reader(const Reader &);
 public slots:
   void for_books();
-//void set_book_name(const QString &);
-//void set_book_autor(const QString &);
+  void for_readers();
+  void give_book();
+  void take_book();
 signals:
-  void rezult(const QString &);
+  void book_rezult(const QString &);
+  void reader_rezult(const QString &);
+  void problem(const QString &);
+  void book_in();
+  void reader_in();
 };
