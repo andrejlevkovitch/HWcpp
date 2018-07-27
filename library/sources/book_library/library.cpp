@@ -253,12 +253,16 @@ void Library::take_book_reader(const Book &book, const Reader &reader) {
   try {
     auto &book_list = journal_.at(reader);
     std::list<Book>::iterator finded;
+
+    if (book.get_autor().empty() && (std::count(book_list.begin(), book_list.end(), book) > 1)) {
+      throw std::invalid_argument{"Reader have several books whith this name"};
+    }
     if ((finded = std::find(book_list.begin(), book_list.end(), book)) ==
         book_list.end()) {
       throw std::invalid_argument{"Reader don't have this book"};
     } else {
       add_book(*finded);
-      book_list.remove(*finded);
+      book_list.erase(finded);
     }
   } catch (std::out_of_range &except) {
     throw std::invalid_argument{"Library haven't this reader"};
@@ -269,3 +273,11 @@ void Library::take_book_reader(const Book &book, const Reader &reader) {
 size_t Library::getBooksNum() const { return bookcase_.size(); }
 
 size_t Library::getReadersNum() const { return journal_.size(); }
+
+std::pair<Bookcase::iterator, Bookcase::iterator> Library::first_last_book() {
+  return std::make_pair(bookcase_.begin(), bookcase_.end());
+}
+
+std::pair<Journal::iterator, Journal::iterator> Library::first_last_reader() {
+  return std::make_pair(journal_.begin(), journal_.end());
+}

@@ -16,6 +16,11 @@ private:
   Book cur_book_;
   Reader cur_reader_;
 
+  std::pair<Bookcase::iterator, Bookcase::iterator> books_it_;
+  std::pair<Journal::iterator, Journal::iterator> readers_it_;
+  std::list<Bookcase::iterator> autor_books_;
+  std::list<Book> reader_books_;
+
 public:
   Screen();
   QPair<QString, QWidget *> create_bookcase_tab();
@@ -35,4 +40,8 @@ signals:
   void problem(const QString &);
   void book_in();
   void reader_in();
+  void display_books();
+  void display_readers();
+  void display_autor();
+  void display_reader_books();
 };

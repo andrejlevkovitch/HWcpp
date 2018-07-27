@@ -6,6 +6,9 @@
 
 Screen::Screen()
     : QWidget{}, library_{"../data/bookcase.txt", "../data/journal.txt"} {
+  books_it_ = library_.first_last_book();
+  readers_it_ = library_.first_last_reader();
+
   ::QList<::QPair<QString, QWidget *>> widget_list;
 
   comand_list_ << "Find"
@@ -13,7 +16,8 @@ Screen::Screen()
                << "Remove";
 
   operace_list_ << "give"
-                << "take away";
+                << "take away"
+                << "refresh";
 
   ::QLabel *book = new ::QLabel{"Book"};
   ::QLabel *book_info = new ::QLabel;
@@ -21,8 +25,8 @@ Screen::Screen()
   book_info->setFrameStyle(::QFrame::Box | ::QFrame::Raised);
   book_info->setLineWidth(2);
   ::QString capacity;
-  capacity =
-      "Library have " + capacity.setNum(library_.getBooksNum()) + " books now";
+  capacity = "Library have " + ::QString::number(library_.getBooksNum()) +
+             " books now";
   book_info->setText(capacity);
   connect(this, SIGNAL(problem(const QString &)), book_info,
           SLOT(setText(const QString &)));
@@ -36,7 +40,7 @@ Screen::Screen()
 
   ::QLabel *reader = new ::QLabel{"Reader"};
   ::QLabel *reader_info = new ::QLabel;
-  capacity = "Library have " + capacity.setNum(library_.getReadersNum()) +
+  capacity = "Library have " + ::QString::number(library_.getReadersNum()) +
              " readers now";
   reader_info->setText(capacity);
   reader_info->setFixedHeight(50);
@@ -58,9 +62,17 @@ Screen::Screen()
   connect(take, SIGNAL(clicked()), SLOT(take_book()));
   connect(take, SIGNAL(clicked()), SLOT(for_books()));
   connect(take, SIGNAL(clicked()), SLOT(for_readers()));
+  ::QPushButton *refresh = new ::QPushButton{operace_list_[2]};
+  connect(refresh, &QPushButton::clicked, this, [=]() {
+    books_it_ = library_.first_last_book();
+    readers_it_ = library_.first_last_reader();
+    emit display_books();
+    emit display_readers();
+  });
   ::QHBoxLayout *buttons_layout = new ::QHBoxLayout;
   buttons_layout->addWidget(give);
   buttons_layout->addWidget(take);
+  buttons_layout->addWidget(refresh);
 
   widget_list.push_back(create_bookcase_tab());
   widget_list.push_back(create_journal_tab());
@@ -78,6 +90,8 @@ Screen::Screen()
   general_layout->addLayout(buttons_layout);
   general_layout->addWidget(tab_wgt);
   setLayout(general_layout);
+  emit display_books();
+  emit display_readers();
 };
 
 ::QPair<::QString, ::QWidget *> Screen::create_journal_tab() {
@@ -88,6 +102,39 @@ Screen::Screen()
   rezult->setFrameStyle(QFrame::Box | QFrame::Raised);
   rezult->setFixedHeight(50);
   rezult->setLineWidth(2);
+
+  ::QStringList header_labels;
+  header_labels << "name"
+                << "surname"
+                << "books capacity";
+  ::QTreeWidget *tree = new ::QTreeWidget;
+  tree->setHeaderLabels(header_labels);
+  tree->setMinimumHeight(150);
+  tree->setSortingEnabled(true);
+  connect(this, &Screen::display_readers, tree, [=]() {
+    while (tree->topLevelItemCount() > 0) {
+      tree->takeTopLevelItem(0);
+    }
+    ::QTreeWidgetItem *item;
+    for (auto i = readers_it_.first; i != readers_it_.second; ++i) {
+      item = new ::QTreeWidgetItem(tree);
+      item->setText(0, i->first.get_name().c_str());
+      item->setText(1, i->first.get_surname().c_str());
+      item->setText(2, ::QString::number(i->second.size()));
+    }
+  });
+  connect(this, &Screen::display_reader_books, tree, [=]() {
+    tree->clear();
+    ::QTreeWidgetItem *reader = new ::QTreeWidgetItem(tree);
+    reader->setText(0, cur_reader_.get_name().c_str());
+    reader->setText(1, cur_reader_.get_surname().c_str());
+    ::QTreeWidgetItem *item = nullptr;
+    for (const auto &i : reader_books_) {
+      item = new ::QTreeWidgetItem(tree);
+      item->setText(1, i.get_name().c_str());
+      item->setText(2, i.get_autor().c_str());
+    }
+  });
 
   ::QLabel *name = new ::QLabel("&Name*");
   ::QLineEdit *name_field = new ::QLineEdit;
@@ -116,13 +163,14 @@ Screen::Screen()
     ::QPushButton *execute = new ::QPushButton(j);
     connect(execute, &QPushButton::clicked, [=]() {
       set_reader(Reader{name_field->text().toStdString(),
-                           surname_field->text().toStdString()});
+                        surname_field->text().toStdString()});
     });
     connect(execute, SIGNAL(clicked()), SLOT(for_readers()));
     button_layout->addWidget(execute);
   }
   ::QVBoxLayout *general_layout = new ::QVBoxLayout;
   general_layout->addWidget(rezult);
+  general_layout->addWidget(tree);
   general_layout->addLayout(reader_layout);
   general_layout->addLayout(button_layout);
 
@@ -139,6 +187,34 @@ Screen::Screen()
   rezult->setFrameStyle(QFrame::Box | QFrame::Raised);
   rezult->setFixedHeight(50);
   rezult->setLineWidth(2);
+
+  ::QStringList header_labels;
+  header_labels << "book"
+                << "autor"
+                << "capacity";
+  ::QTreeWidget *tree = new ::QTreeWidget;
+  tree->setHeaderLabels(header_labels);
+  tree->setMinimumHeight(150);
+  connect(this, &Screen::display_books, [=]() {
+    tree->clear();
+    ::QTreeWidgetItem *item = nullptr;
+    for (auto i = books_it_.first; i != books_it_.second; ++i) {
+      item = new ::QTreeWidgetItem(tree);
+      item->setText(0, i->first.get_name().c_str());
+      item->setText(1, i->first.get_autor().c_str());
+      item->setText(2, ::QString::number(i->second));
+    }
+  });
+  connect(this, &Screen::display_autor, [=]() {
+    tree->clear();
+    ::QTreeWidgetItem *item = nullptr;
+    for (const auto &i : autor_books_) {
+      item = new ::QTreeWidgetItem(tree);
+      item->setText(0, i->first.get_name().c_str());
+      item->setText(1, i->first.get_autor().c_str());
+      item->setText(2, ::QString::number(i->second));
+    }
+  });
 
   ::QLabel *name = new ::QLabel("&Name");
   ::QLineEdit *name_field = new ::QLineEdit;
@@ -167,13 +243,14 @@ Screen::Screen()
     ::QPushButton *execute = new ::QPushButton(j);
     connect(execute, &QPushButton::clicked, [=]() {
       set_book(Book{name_field->text().toStdString(),
-                       autor_field->text().toStdString()});
+                    autor_field->text().toStdString()});
     });
     connect(execute, SIGNAL(clicked()), SLOT(for_books()));
     button_layout->addWidget(execute);
   }
   ::QVBoxLayout *general_layout = new ::QVBoxLayout;
   general_layout->addWidget(rezult);
+  general_layout->addWidget(tree);
   general_layout->addLayout(book_layout);
   general_layout->addLayout(button_layout);
 
@@ -186,7 +263,9 @@ void Screen::for_books() {
   ::QString retval;
   auto comand = reinterpret_cast<::QPushButton *>(sender())->text();
   if (cur_book_.get_name().empty() && cur_book_.get_autor().empty()) {
+    books_it_ = library_.first_last_book();
     retval = "Input datas, please";
+    emit display_books();
   } else {
     if (comand == comand_list_[0]) {
       if (cur_book_.get_name().empty()) {
@@ -194,12 +273,14 @@ void Screen::for_books() {
         if (finded.empty()) {
           retval = "Library hasn't books of this autor";
         } else {
-          retval = "Library has " + retval.setNum(finded.size()) +
+          retval = "Library has " + ::QString::number(finded.size()) +
                    " book(s) of this autor";
           if (finded.size() == 1) {
             set_book(finded.front()->first);
             emit book_in();
           }
+          autor_books_ = finded;
+          emit display_autor();
         }
       } else {
         auto finded = library_.find_book(cur_book_);
@@ -207,15 +288,21 @@ void Screen::for_books() {
           retval = "Library hasn't this";
         } else {
           retval = "Library has " +
-                   retval.setNum(std::distance(std::get<0>(finded),
-                                               std::get<1>(finded))) +
+                   ::QString::number(std::distance(std::get<0>(finded),
+                                                   std::get<1>(finded))) +
                    " books with this name.";
+
+          books_it_ = std::make_pair(std::get<0>(finded), std::get<1>(finded));
+          display_books();
+
           if (std::get<2>(finded)) {
             if (cur_book_.get_autor().empty()) {
               set_book(std::get<0>(finded)->first);
             }
             emit book_in();
           }
+          books_it_ = std::make_pair(std::get<0>(finded), std::get<1>(finded));
+          emit display_books();
         }
       }
     } else if (comand == comand_list_[1]) {
@@ -225,6 +312,8 @@ void Screen::for_books() {
         library_.add_book(cur_book_.get_name(), cur_book_.get_autor());
         retval = "Executed";
         emit book_in();
+        books_it_ = library_.first_last_book();
+        emit display_books();
       }
     } else if (comand == comand_list_[2]) {
       if (cur_book_.get_name().empty()) {
@@ -232,6 +321,8 @@ void Screen::for_books() {
       } else {
         if (library_.remove_book(cur_book_)) {
           retval = "Executed";
+          books_it_ = library_.first_last_book();
+          emit display_books();
         } else {
           retval = "Not removed";
         }
@@ -246,25 +337,33 @@ void Screen::for_readers() {
   auto comand = reinterpret_cast<::QPushButton *>(sender())->text();
   if (cur_reader_.get_name().empty() || cur_reader_.get_surname().empty()) {
     retval = "Input data, please";
+    readers_it_ = library_.first_last_reader();
+    emit display_readers();
   } else {
     if (comand == comand_list_[0]) {
       auto finded = library_.find_reader(cur_reader_);
       if (finded.second) {
         retval = "The reader read " +
-                 retval.setNum(finded.first->second.size()) + " books now";
+                 ::QString::number(finded.first->second.size()) + " books now";
         emit reader_in();
+        reader_books_ = finded.first->second;
+        emit display_reader_books();
       } else {
         retval = "Library hasn't the reader";
       }
     } else if (comand == comand_list_[1]) {
       if (library_.register_reader(cur_reader_).second) {
         retval = "Executed";
+        readers_it_ = library_.first_last_reader();
+        emit display_readers();
       } else {
         retval = "Library already has the reader";
       }
       emit reader_in();
     } else if (comand == comand_list_[2]) {
       if (library_.erase_reader(cur_reader_)) {
+        readers_it_ = library_.first_last_reader();
+        emit display_readers();
         retval = "Executed";
       } else {
         retval = "Library hasn't the reader";
@@ -294,10 +393,6 @@ void Screen::take_book() {
   }
 }
 
-void Screen::set_book(const Book &in) {
-  cur_book_ = in;
-}
+void Screen::set_book(const Book &in) { cur_book_ = in; }
 
-void Screen::set_reader(const Reader &in) {
-  cur_reader_ = in;
-}
+void Screen::set_reader(const Reader &in) { cur_reader_ = in; }

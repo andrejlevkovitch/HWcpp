@@ -54,4 +54,6 @@ public:
 
   size_t getBooksNum() const;
   size_t getReadersNum() const;
+  std::pair<Bookcase::iterator, Bookcase::iterator> first_last_book();
+  std::pair<Journal::iterator, Journal::iterator> first_last_reader();
 };
