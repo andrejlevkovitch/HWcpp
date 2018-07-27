@@ -135,9 +135,13 @@ Screen::Screen()
       item->setText(2, i.get_autor().c_str());
     }
   });
+  connect(tree, SIGNAL(itemDoubleClicked(QTreeWidgetItem *, int)),
+          SLOT(set_reader(QTreeWidgetItem *)));
 
   ::QLabel *name = new ::QLabel("&Name*");
   ::QLineEdit *name_field = new ::QLineEdit;
+  connect(this, &Screen::reader_in, name_field,
+          [=]() { name_field->setText(cur_reader_.get_name().c_str()); });
   Valid *name_valid = new Valid(name_field);
   name_field->setValidator(name_valid);
   name->setBuddy(name_field);
@@ -147,6 +151,8 @@ Screen::Screen()
 
   ::QLabel *surname = new ::QLabel("&Surname*");
   ::QLineEdit *surname_field = new ::QLineEdit;
+  connect(this, &Screen::reader_in, surname_field,
+          [=]() { surname_field->setText(cur_reader_.get_surname().c_str()); });
   Valid *surname_valid = new Valid(surname_field);
   surname_field->setValidator(surname_valid);
   surname->setBuddy(surname_field);
@@ -215,9 +221,13 @@ Screen::Screen()
       item->setText(2, ::QString::number(i->second));
     }
   });
+  connect(tree, SIGNAL(itemDoubleClicked(QTreeWidgetItem *, int)),
+          SLOT(set_book(QTreeWidgetItem *)));
 
   ::QLabel *name = new ::QLabel("&Name");
   ::QLineEdit *name_field = new ::QLineEdit;
+  connect(this, &Screen::book_in, name_field,
+          [=]() { name_field->setText(cur_book_.get_name().c_str()); });
   Valid *name_valid = new Valid(name_field);
   name_field->setValidator(name_valid);
   name->setBuddy(name_field);
@@ -227,6 +237,8 @@ Screen::Screen()
 
   ::QLabel *autor = new ::QLabel("&Autor");
   ::QLineEdit *autor_field = new ::QLineEdit;
+  connect(this, &Screen::book_in, autor_field,
+          [=]() { autor_field->setText(cur_book_.get_autor().c_str()); });
   Valid *autor_valid = new Valid(autor_field);
   autor_field->setValidator(autor_valid);
   autor->setBuddy(autor_field);
@@ -396,3 +408,20 @@ void Screen::take_book() {
 void Screen::set_book(const Book &in) { cur_book_ = in; }
 
 void Screen::set_reader(const Reader &in) { cur_reader_ = in; }
+
+void Screen::set_book(QTreeWidgetItem *in) {
+  set_book(Book{in->text(0).toStdString(), in->text(1).toStdString()});
+  emit book_in();
+}
+
+void Screen::set_reader(QTreeWidgetItem *in) {
+  if (in->text(0).isEmpty()) {
+    set_book(Book{in->text(1).toStdString(), in->text(2).toStdString()});
+    emit book_in();
+  } else {
+    set_reader(Reader{in->text(0).toStdString(), in->text(1).toStdString()});
+    reader_books_ = library_.find_reader(cur_reader_).first->second;
+    emit reader_in();
+    emit display_reader_books();
+  }
+}

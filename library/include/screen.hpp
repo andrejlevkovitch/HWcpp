@@ -5,6 +5,8 @@
 #include "library.hpp"
 #include <QWidget>
 
+class QTreeWidgetItem;
+
 class Screen : public QWidget {
   Q_OBJECT
 private:
@@ -34,6 +36,8 @@ public slots:
   void for_readers();
   void give_book();
   void take_book();
+  void set_book(QTreeWidgetItem *);
+  void set_reader(QTreeWidgetItem *);
 signals:
   void book_rezult(const QString &);
   void reader_rezult(const QString &);
