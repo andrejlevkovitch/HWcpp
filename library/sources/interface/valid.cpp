@@ -1,6 +1,6 @@
 //valid.cpp
 
-#include <QtWidgets>
+#include <QValidator>
 #include "valid.hpp"
 
 Valid::Valid(QObject *parent) : ::QValidator(parent) {

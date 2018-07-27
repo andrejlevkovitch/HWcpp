@@ -2,7 +2,13 @@
 
 #include "screen.hpp"
 #include "valid.hpp"
-#include <QtWidgets>
+#include <QBoxLayout>
+#include <QLabel>
+#include <QLineEdit>
+#include <QPushButton>
+#include <QString>
+#include <QTabWidget>
+#include <QTreeWidget>
 
 Screen::Screen()
     : QWidget{}, library_{"../data/bookcase.txt", "../data/journal.txt"} {
@@ -25,8 +31,8 @@ Screen::Screen()
   book_info->setFrameStyle(::QFrame::Box | ::QFrame::Raised);
   book_info->setLineWidth(2);
   ::QString capacity;
-  capacity = "Library has " + ::QString::number(library_.getBooksNum()) +
-             " books now";
+  capacity =
+      "Library has " + ::QString::number(library_.getBooksNum()) + " books now";
   book_info->setText(capacity);
   connect(this, SIGNAL(problem(const QString &)), book_info,
           SLOT(setText(const QString &)));
