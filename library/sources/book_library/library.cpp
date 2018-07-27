@@ -232,7 +232,7 @@ Library::find_reader(const std::string &name, const std::string &surname) {
 void Library::give_book_reader(const Book &book, const Reader &reader) {
   auto finded = find_book(book);
   if (!std::get<2>(finded)) {
-    throw std::invalid_argument{"Library haven't this book"};
+    throw std::invalid_argument{"Library hasn't this book"};
   } else {
     try {
       auto &cur_reader_list = journal_.at(reader);
@@ -243,7 +243,7 @@ void Library::give_book_reader(const Book &book, const Reader &reader) {
         throw std::length_error{"Upper then limit"};
       }
     } catch (std::out_of_range &except) {
-      throw std::invalid_argument{"Library haven't this reader"};
+      throw std::invalid_argument{"Library hasn't this reader"};
     }
   }
   return;
@@ -255,17 +255,17 @@ void Library::take_book_reader(const Book &book, const Reader &reader) {
     std::list<Book>::iterator finded;
 
     if (book.get_autor().empty() && (std::count(book_list.begin(), book_list.end(), book) > 1)) {
-      throw std::invalid_argument{"Reader have several books whith this name"};
+      throw std::invalid_argument{"Reader has several books whith this name"};
     }
     if ((finded = std::find(book_list.begin(), book_list.end(), book)) ==
         book_list.end()) {
-      throw std::invalid_argument{"Reader don't have this book"};
+      throw std::invalid_argument{"Reader hasn't this book"};
     } else {
       add_book(*finded);
       book_list.erase(finded);
     }
   } catch (std::out_of_range &except) {
-    throw std::invalid_argument{"Library haven't this reader"};
+    throw std::invalid_argument{"Library hasn't this reader"};
   }
   return;
 }

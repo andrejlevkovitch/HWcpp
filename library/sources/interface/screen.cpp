@@ -25,7 +25,7 @@ Screen::Screen()
   book_info->setFrameStyle(::QFrame::Box | ::QFrame::Raised);
   book_info->setLineWidth(2);
   ::QString capacity;
-  capacity = "Library have " + ::QString::number(library_.getBooksNum()) +
+  capacity = "Library has " + ::QString::number(library_.getBooksNum()) +
              " books now";
   book_info->setText(capacity);
   connect(this, SIGNAL(problem(const QString &)), book_info,
@@ -40,7 +40,7 @@ Screen::Screen()
 
   ::QLabel *reader = new ::QLabel{"Reader"};
   ::QLabel *reader_info = new ::QLabel;
-  capacity = "Library have " + ::QString::number(library_.getReadersNum()) +
+  capacity = "Library has " + ::QString::number(library_.getReadersNum()) +
              " readers now";
   reader_info->setText(capacity);
   reader_info->setFixedHeight(50);
@@ -110,7 +110,6 @@ Screen::Screen()
   ::QTreeWidget *tree = new ::QTreeWidget;
   tree->setHeaderLabels(header_labels);
   tree->setMinimumHeight(150);
-  tree->setSortingEnabled(true);
   connect(this, &Screen::display_readers, tree, [=]() {
     while (tree->topLevelItemCount() > 0) {
       tree->takeTopLevelItem(0);
