@@ -16,12 +16,12 @@ std::string pars(const std::string &text) {
       } else if (*std::next(i) == '*') {
         ++i;
         while (!(*std::prev(i) == '*' && *i == '/')) {
-          ++i;
           if (i == text.end()) {
             out = "Error::Not founded */";
             --i;
             break;
           }
+          ++i;
         }
         continue;
       }
