@@ -1,0 +1,8 @@
+<RCC>
+  <qresource prefix="/">
+    <file alias="line">images/line.png</file>
+    <file alias="curved_line">images/curved_line.png</file>
+    <file alias="circle">images/circled.png</file>
+    <file alias="rectangle">images/rectangle.png</file>
+  </qresource>
+</RCC>
