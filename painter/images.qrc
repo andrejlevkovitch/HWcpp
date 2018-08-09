@@ -4,5 +4,8 @@
     <file alias="curved_line">images/curved_line.png</file>
     <file alias="circle">images/circled.png</file>
     <file alias="rectangle">images/rectangle.png</file>
+    <file alias="color">images/color.png</file>
+    <file alias="square">images/square.png</file>
+    <file alias="ellips">images/ellips.png</file>
   </qresource>
 </RCC>
