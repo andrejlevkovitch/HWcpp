@@ -89,10 +89,24 @@ Qt::ItemFlags ModelReader::flags(const ::QModelIndex &index) const {
 }
 
 ::QModelIndex ModelReader::index(int row, int column,
-                    const ::QModelIndex &parent) const {
-  auto ip = (parent == ::QModelIndex{}) ? 0 : parent.internalPointer();
-  return createIndex(row, column, ip);
+                                 const ::QModelIndex &parent) const {
+  if (!hasIndex(row, column, parent)) {
+    return ::QModelIndex{};
+  }
+  if (!parent.isValid()) {
+    auto iter = journal_.begin();
+    std::advance(iter, row);
+    const void *alfa = reinterpret_cast<const void *>(&(*iter));
+    return createIndex(row, column, const_cast<void *>(alfa));
+  } else {
+    auto iter = reinterpret_cast<std::pair<Reader, std::list<Book>> *>(parent.internalPointer())->second.begin();
+    std::advance(iter, row);
+    return createIndex(row, column, parent.internalPointer());
+  }
 }
 
 ::QModelIndex ModelReader::parent(const ::QModelIndex &index) const {
+  if (!index.isValid()) {
+    return ::QModelIndex{};
+  }
 }

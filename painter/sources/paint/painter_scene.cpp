@@ -9,11 +9,9 @@
 
 painter::painter_scene::painter_scene(::QObject *parent)
     : QGraphicsScene{parent}, figure_{NONE},
-      cur_figure_{nullptr}, pen_{Qt::black, 3} {}
+      cur_figure_{nullptr}, pen_{Qt::white, 1} {}
 
-painter::painter_scene::~painter_scene() {
-  this->clear();
-}
+painter::painter_scene::~painter_scene() { this->clear(); }
 
 void painter::painter_scene::mousePressEvent(
     ::QGraphicsSceneMouseEvent *event) {
@@ -22,6 +20,11 @@ void painter::painter_scene::mousePressEvent(
   case NONE: {
     if ((cur_figure_ = itemAt(last_pos_, ::QTransform{}))) {
       ::QApplication::setOverrideCursor(Qt::PointingHandCursor);
+    }
+  } break;
+  case DEL: {
+    if ((cur_figure_ = itemAt(last_pos_, ::QTransform{}))) {
+      this->removeItem(cur_figure_);
     }
   } break;
   case LINE: {
@@ -148,7 +151,7 @@ void painter::painter_scene::save_file(const ::QString &name) {
     pn.begin(&image);
     this->render(&pn);
     pn.end();
-    image.save(name);
+    image.save(name, "PNG");
   }
 }
 

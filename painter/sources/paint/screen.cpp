@@ -21,18 +21,30 @@ painter::screen::screen(::QWidget *parent) : ::QWidget{parent} {
   auto stat_bar = new ::QStatusBar;
 
   auto scene = new painter::painter_scene{this};
-  scene->setSceneRect(0, 0, 500, 500);
-  connect(this, SIGNAL(send_open_file(const ::QString &)), scene,
-          SLOT(open_file(const ::QString &)));
-  connect(this, SIGNAL(send_save_file(const ::QString &)), scene,
-          SLOT(save_file(const ::QString &)));
+  {
+    scene->setSceneRect(0, 0, 500, 500);
+    connect(this, SIGNAL(send_open_file(const ::QString &)), scene,
+            SLOT(open_file(const ::QString &)));
+    connect(this, SIGNAL(send_save_file(const ::QString &)), scene,
+            SLOT(save_file(const ::QString &)));
+  }
   auto view = new painter::painter_view;
-  view->setScene(scene);
-  connect(view, &painter::painter_view::mouse_pos, stat_bar, [=](::QPoint pos) {
-    stat_bar->clearMessage();
-    stat_bar->showMessage(
-        ::QString{"x = %1, y = %2"}.arg(pos.x()).arg(pos.y()));
-  });
+  {
+    view->setScene(scene);
+    connect(view, &painter::painter_view::mouse_pos, stat_bar,
+            [=](::QPoint pos) {
+              stat_bar->clearMessage();
+              stat_bar->showMessage(
+                  ::QString{"x = %1, y = %2"}.arg(pos.x()).arg(pos.y()));
+            });
+  }
+
+  auto cur_color = new ::QLabel;
+  {
+    cur_color->setFixedWidth(20);
+    cur_color->setPalette(::QPalette{::QPalette::Window, Qt::white});
+    cur_color->setAutoFillBackground(true);
+  }
 
   {
     auto file_menu = new ::QMenu{"File"};
@@ -53,6 +65,11 @@ painter::screen::screen(::QWidget *parent) : ::QWidget{parent} {
     auto none = new ::QAction{"NONE", this};
     connect(none, &::QAction::triggered, scene,
             [=]() { scene->set_figure(painter_scene::NONE); });
+
+    auto del = new ::QAction{"DEL", this};
+    connect(del, &::QAction::triggered, scene, [=](){
+        scene->set_figure(painter_scene::DEL);
+        });
 
     auto clear = new ::QAction{"CLEAR", this};
     connect(clear, &::QAction::triggered, scene,
@@ -88,11 +105,6 @@ painter::screen::screen(::QWidget *parent) : ::QWidget{parent} {
     connect(counter, SIGNAL(valueChanged(int)), scene, SLOT(set_pen_size(int)));
     counter->setRange(1, 30);
 
-    auto cur_color = new ::QLabel{};
-    cur_color->setFixedWidth(20);
-    cur_color->setPalette(::QPalette{::QPalette::Window, Qt::black});
-    cur_color->setAutoFillBackground(true);
-
     auto set_color = new ::QAction{::QPixmap{":/color"}, "Set color", this};
     connect(set_color, &::QAction::triggered, this, [=]() {
       auto color =
@@ -109,19 +121,24 @@ painter::screen::screen(::QWidget *parent) : ::QWidget{parent} {
     tool_bar_v->addAction(circle);
     tool_bar_v->addAction(rectangle);
     tool_bar_v->addAction(ellips);
+
     tool_bar_h->addAction(none);
+    tool_bar_h->addAction(del);
     tool_bar_h->addAction(clear);
     tool_bar_h->addWidget(counter);
-    tool_bar_h->addWidget(cur_color);
     tool_bar_h->addAction(set_color);
   }
+  auto color_tool_layout = new ::QHBoxLayout;
+  color_tool_layout->addWidget(cur_color);
+  color_tool_layout->addWidget(tool_bar_h);
+
   auto dop_layout = new ::QHBoxLayout;
   dop_layout->addWidget(tool_bar_v);
   dop_layout->addWidget(view);
 
   auto general_layout = new ::QVBoxLayout;
   general_layout->addWidget(menu_bar);
-  general_layout->addWidget(tool_bar_h);
+  general_layout->addLayout(color_tool_layout);
   general_layout->addLayout(dop_layout);
   general_layout->addWidget(stat_bar);
   setLayout(general_layout);

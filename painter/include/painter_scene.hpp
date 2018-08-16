@@ -8,7 +8,16 @@ namespace painter {
 class painter_scene : public ::QGraphicsScene {
   Q_OBJECT
 public:
-  enum figure { NONE, LINE, CURVED_LINE, SQUARE, CIRCLE, RECTANGLE, ELLIPS };
+  enum figure {
+    NONE,
+    DEL,
+    LINE,
+    CURVED_LINE,
+    SQUARE,
+    CIRCLE,
+    RECTANGLE,
+    ELLIPS
+  };
 
 private:
   ::QPointF last_pos_;

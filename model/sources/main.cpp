@@ -13,9 +13,9 @@ int main(int argc, char *argv[]) {
   ::QTreeView list;
   list.setModel(&model);
   list.show();
-  ::QTreeView list2;
-  list2.setModel(&model2);
-  list2.show();
+//::QTreeView list2;
+//list2.setModel(&model2);
+//list2.show();
 
   return app.exec();
 }
