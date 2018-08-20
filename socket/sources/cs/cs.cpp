@@ -83,13 +83,15 @@ void CS::connect_slot() {
     socket_ = new ::QTcpSocket{this};
     connect(socket_, &::QTcpSocket::connected, text_edit_,
             [=]() { text_edit_->append("CONNECTED"); });
+    connect(socket_, &::QTcpSocket::disconnected, text_edit_,
+            [=]() { text_edit_->append("DISCONNECTED"); });
     connect(socket_, SIGNAL(readyRead()), this, SLOT(read_message()));
   }
   socket_->connectToHost(line_edit->text(), default_port);
 }
 
 void CS::set_socket() {
-  if (!socket_) {
+  if (!socket_ || !socket_->isValid()) {
     text_edit_->append("CONNECTED");
     socket_ = server_->nextPendingConnection();
     connect(socket_, SIGNAL(disconnected()), socket_, SLOT(deleteLater()));
