@@ -9,7 +9,7 @@
 
 painter::painter_scene::painter_scene(::QObject *parent)
     : QGraphicsScene{parent}, figure_{NONE},
-      cur_figure_{nullptr}, pen_{Qt::white, 1} {}
+      cur_figure_{nullptr}, pen_{Qt::black, 1}, brush_{Qt::white} {}
 
 painter::painter_scene::~painter_scene() { this->clear(); }
 
@@ -34,28 +34,28 @@ void painter::painter_scene::mousePressEvent(
   } break;
   case CURVED_LINE: {
     ::QPainterPath pp{last_pos_};
-    cur_figure_ = addPath(pp, pen_);
+    cur_figure_ = addPath(pp, pen_, brush_);
     static_cast<::QGraphicsPathItem *>(cur_figure_)->setPath(pp);
     cur_figure_->setFlags(::QGraphicsItem::ItemIsMovable);
   } break;
   case SQUARE: {
     ::QRect rect{last_pos_.toPoint(), ::QSize{}};
-    cur_figure_ = addRect(rect, pen_);
+    cur_figure_ = addRect(rect, pen_, brush_);
     cur_figure_->setFlag(::QGraphicsItem::ItemIsMovable);
   } break;
   case CIRCLE: {
     ::QRect rect{last_pos_.toPoint(), ::QSize{}};
-    cur_figure_ = addEllipse(rect, pen_);
+    cur_figure_ = addEllipse(rect, pen_, brush_);
     cur_figure_->setFlag(::QGraphicsItem::ItemIsMovable);
   } break;
   case RECTANGLE: {
     ::QRect rect{last_pos_.toPoint(), ::QSize{}};
-    cur_figure_ = addRect(rect, pen_);
+    cur_figure_ = addRect(rect, pen_, brush_);
     cur_figure_->setFlag(::QGraphicsItem::ItemIsMovable);
   } break;
   case ELLIPS: {
     ::QRect rect{last_pos_.toPoint(), ::QSize{}};
-    cur_figure_ = addEllipse(rect, pen_);
+    cur_figure_ = addEllipse(rect, pen_, brush_);
     cur_figure_->setFlag(::QGraphicsItem::ItemIsMovable);
   } break;
   default:
@@ -160,5 +160,11 @@ void painter::painter_scene::set_pen_size(int size) { pen_.setWidth(size); }
 void painter::painter_scene::set_pen_color(::QColor color) {
   if (color.isValid()) {
     pen_.setColor(color);
+  }
+}
+
+void painter::painter_scene::set_brush_color(::QColor color) {
+  if (color.isValid()) {
+    brush_.setColor(color);
   }
 }

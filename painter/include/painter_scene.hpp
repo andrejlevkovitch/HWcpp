@@ -24,6 +24,7 @@ private:
   figure figure_;
   ::QGraphicsItem *cur_figure_;
   ::QPen pen_;
+  ::QBrush brush_;
 
 public:
   painter_scene(::QObject *parent = nullptr);
@@ -38,5 +39,6 @@ public slots:
   void save_file(const ::QString &name);
   void set_pen_size(int size);
   void set_pen_color(::QColor color);
+  void set_brush_color(::QColor color);
 };
 }; // namespace painter

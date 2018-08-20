@@ -8,7 +8,9 @@
 #include <QFileDialog>
 #include <QLabel>
 #include <QMenuBar>
+#include <QPushButton>
 #include <QSpinBox>
+#include <QStackedLayout>
 #include <QStatusBar>
 #include <QToolBar>
 
@@ -39,11 +41,43 @@ painter::screen::screen(::QWidget *parent) : ::QWidget{parent} {
             });
   }
 
-  auto cur_color = new ::QLabel;
+  auto color_layout = new ::QVBoxLayout;
   {
-    cur_color->setFixedWidth(20);
-    cur_color->setPalette(::QPalette{::QPalette::Window, Qt::white});
-    cur_color->setAutoFillBackground(true);
+    color_layout->setSpacing(0);
+    auto pen_color = new ::QPushButton;
+    {
+//    pen_color->setFlat(true);
+      pen_color->setFixedSize(::QSize{40, 20});
+      pen_color->setAutoFillBackground(true);
+      pen_color->setPalette(::QPalette{::QPalette::Window, Qt::black});
+      connect(pen_color, &::QPushButton::clicked, this, [=]() {
+        auto color =
+            ::QColorDialog::getColor(Qt::black, this, "choise pen color");
+        if (color.isValid()) {
+          scene->set_pen_color(color);
+          pen_color->setPalette(::QPalette{::QPalette::Window, color});
+        }
+      });
+    }
+    auto brush_color = new ::QPushButton;
+    {
+      brush_color->setFixedSize(::QSize{40, 20});
+      brush_color->setStyleSheet("background : white");
+//    brush_color->setFlat(true);
+      brush_color->setAutoFillBackground(true);
+      brush_color->setPalette(::QPalette{::QPalette::Window, Qt::white});
+      connect(brush_color, &::QPushButton::clicked, this, [=]() {
+        auto color =
+            ::QColorDialog::getColor(Qt::black, this, "choise brush color");
+        if (color.isValid()) {
+          scene->set_brush_color(color);
+          brush_color->setPalette(::QPalette{::QPalette::Window, color});
+        }
+      });
+    }
+
+    color_layout->addWidget(pen_color);
+    color_layout->addWidget(brush_color);
   }
 
   {
@@ -67,9 +101,8 @@ painter::screen::screen(::QWidget *parent) : ::QWidget{parent} {
             [=]() { scene->set_figure(painter_scene::NONE); });
 
     auto del = new ::QAction{"DEL", this};
-    connect(del, &::QAction::triggered, scene, [=](){
-        scene->set_figure(painter_scene::DEL);
-        });
+    connect(del, &::QAction::triggered, scene,
+            [=]() { scene->set_figure(painter_scene::DEL); });
 
     auto clear = new ::QAction{"CLEAR", this};
     connect(clear, &::QAction::triggered, scene,
@@ -105,16 +138,6 @@ painter::screen::screen(::QWidget *parent) : ::QWidget{parent} {
     connect(counter, SIGNAL(valueChanged(int)), scene, SLOT(set_pen_size(int)));
     counter->setRange(1, 30);
 
-    auto set_color = new ::QAction{::QPixmap{":/color"}, "Set color", this};
-    connect(set_color, &::QAction::triggered, this, [=]() {
-      auto color =
-          ::QColorDialog::getColor(Qt::black, this, "choise some color");
-      if (color.isValid()) {
-        scene->set_pen_color(color);
-        cur_color->setPalette(::QPalette{::QPalette::Window, color});
-      }
-    });
-
     tool_bar_v->addAction(line);
     tool_bar_v->addAction(curved_line);
     tool_bar_v->addAction(square);
@@ -126,10 +149,9 @@ painter::screen::screen(::QWidget *parent) : ::QWidget{parent} {
     tool_bar_h->addAction(del);
     tool_bar_h->addAction(clear);
     tool_bar_h->addWidget(counter);
-    tool_bar_h->addAction(set_color);
   }
   auto color_tool_layout = new ::QHBoxLayout;
-  color_tool_layout->addWidget(cur_color);
+  color_tool_layout->addLayout(color_layout);
   color_tool_layout->addWidget(tool_bar_h);
 
   auto dop_layout = new ::QHBoxLayout;
