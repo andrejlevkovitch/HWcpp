@@ -23,8 +23,9 @@ Server::Server(::QWidget *parent)
   {
     auto tool_bar = new ::QToolBar;
     {
-      auto set_port_action = new ::QAction{"host and port", tool_bar};
-      connect(set_port_action, SIGNAL(triggered()), this, SLOT(set_port()));
+      auto set_host_port_action = new ::QAction{"host and port", tool_bar};
+      connect(set_host_port_action, SIGNAL(triggered()), this,
+              SLOT(set_host_port_slot()));
 
       tool_bar->addAction(set_port_action);
     }
@@ -53,7 +54,7 @@ void Server::set_host_port_slot() {
       nullptr, "input", "host", ::QLineEdit::EchoMode::Normal, host_, &host_on);
 
   auto port = ::QInputDialog::getInt(nullptr, "input", "port", port_, 2000,
-                                      8000, 1, &port_on);
+                                     8000, 1, &port_on);
   if (host_on) {
     host_ = host;
   }
