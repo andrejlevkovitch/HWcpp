@@ -27,7 +27,7 @@ Server::Server(::QWidget *parent)
       connect(set_host_port_action, SIGNAL(triggered()), this,
               SLOT(set_host_port_slot()));
 
-      tool_bar->addAction(set_port_action);
+      tool_bar->addAction(set_host_port_action);
     }
 
     text_edit_ = new ::QTextEdit;
