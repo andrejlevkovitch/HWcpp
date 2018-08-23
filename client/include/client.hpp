@@ -26,6 +26,5 @@ public:
   public slots:
     void run_client();
     void set_host_port_slot();
-    void read_slot();
     void send_file();
 };

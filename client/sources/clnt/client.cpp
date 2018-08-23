@@ -18,11 +18,8 @@ Client::Client(::QWidget *parent)
     : ::QWidget{parent}, socket_{nullptr},
       text_edit_{nullptr}, host_{DEFAULT_HOST}, port_{DEFAULT_PORT} {
   socket_ = new ::QTcpSocket{this};
-  connect(socket_, &::QTcpSocket::bytesWritten, socket_,
-          [=]() { socket_->waitForReadyRead(); });
   connect(socket_, &::QTcpSocket::connected, text_edit_,
           [=]() { text_edit_->append("CONNECTED WITH SERVER"); });
-  connect(socket_, SIGNAL(readyRead()), this, SLOT(read_slot()));
 
   auto general_layout = new ::QVBoxLayout;
   {
@@ -41,8 +38,7 @@ Client::Client(::QWidget *parent)
 
     text_edit_ = new ::QTextEdit;
     text_edit_->setReadOnly(true);
-    text_edit_->append(
-        "Client created");
+    text_edit_->append("Client created");
 
     general_layout->addWidget(tool_bar);
     general_layout->addWidget(text_edit_);
@@ -77,8 +73,6 @@ void Client::set_host_port_slot() {
     run_client();
   }
 }
-
-void Client::read_slot() { text_edit_->append(socket_->readAll()); }
 
 void Client::send_file() {
   auto file_path = ::QFileDialog::getOpenFileName(nullptr, "Send", ".");
@@ -115,8 +109,18 @@ void Client::send_file() {
         }
         dom_doc.appendChild(dom_element);
 
-        socket_->write(dom_doc.toByteArray());
+        auto data = dom_doc.toByteArray();
+        socket_->write(data);
         socket_->flush();
+        //вот сдесь, почему-то иногда вместо отправки одного пакета  данных,
+        //происходит отправка сразу двух пакетов в одном.
+
+        //      socket_->waitForReadyRead();//если раскоментировать эту строку,
+        //      то вся проблема исчезнет, так как нужен ответ от сервера
+
+        text_edit_->append("send " + ::QString::number(number) + " packet " +
+                           ::QString::number(data.size()) + " byte");
+        socket_->readAll();
 
       } while (!file.atEnd());
 

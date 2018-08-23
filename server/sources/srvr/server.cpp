@@ -92,7 +92,8 @@ void Server::read_file() {
   auto socket = dynamic_cast<::QTcpSocket *>(sender());
   ::QDomDocument dom_doc;
   ::QTextStream stream{socket};
-  dom_doc.setContent(stream.readAll());
+  auto data = stream.readAll();
+  dom_doc.setContent(data);
   send_to_client(socket, "OK");
   auto dom_element = dom_doc.documentElement();
   if (!dom_element.isNull()) {
@@ -100,6 +101,8 @@ void Server::read_file() {
       auto file_name = dom_element.attribute("name");
       auto file_size = dom_element.attribute("size").toUInt();
       auto number = dom_element.attribute("number").toUInt();
+
+  text_edit_->append("get " + ::QString::number(number) + " packet " + ::QString::number(data.size()) + " bytes");
 
       ::QFile file{file_name};
       if (number) {
